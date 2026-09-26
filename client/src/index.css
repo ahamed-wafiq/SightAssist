@@ -1,0 +1,147 @@
+/* ==========================================================================
+   SightAssist - Accessible Core Design System
+   Clean, modern, accessibility-first design system
+   Light/neutral background by default + High-contrast mode support
+   ========================================================================== */
+
+:root {
+  /* Light / Neutral Theme (Default) */
+  --bg-primary: #f8fafc;        /* Clean light slate */
+  --bg-surface: #ffffff;        /* Pure white cards */
+  --bg-surface-elevated: #f1f5f9; /* Subtle elevated container */
+  --bg-card: #ffffff;
+
+  --border-primary: #cbd5e1;    /* Slate-300 accessible borders */
+  --border-subtle: #e2e8f0;     /* Slate-200 dividers */
+  --border-focus: #0f172a;      /* High contrast keyboard focus ring */
+
+  --text-primary: #0f172a;      /* Slate-900 (ultra-readable contrast: >12:1) */
+  --text-secondary: #334155;    /* Slate-700 */
+  --text-muted: #64748b;        /* Slate-500 */
+
+  /* Semantic Accessibility Accents */
+  --accent-primary: #0f172a;    /* Deep navy / slate primary */
+  --accent-primary-text: #ffffff;
+
+  --accent-action-start: #047857; /* Deep accessible Emerald Green (contrast >4.5:1) */
+  --accent-action-start-hover: #065f46;
+  --accent-action-stop: #be123c;  /* Deep accessible Rose/Crimson (contrast >4.5:1) */
+  --accent-action-stop-hover: #9f1239;
+
+  --accent-warning: #b45309;    /* Accessible Amber (contrast >4.5:1 on light) */
+  --accent-warning-bg: #fef3c7;
+  --accent-info: #0369a1;       /* Accessible Cyan/Blue */
+  --accent-info-bg: #e0f2fe;
+
+  --color-online: #15803d;      /* Accessible Green */
+  --color-online-bg: #dcfce7;
+  --color-offline: #b91c1c;     /* Accessible Red */
+  --color-offline-bg: #fee2e2;
+
+  /* Typography (Minimum 18px base for accessibility) */
+  --font-family-primary: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-base: 18px;
+
+  /* Touch Targets (Mobile-first accessibility standard: min 48px-64px) */
+  --touch-target-min: 48px;
+  --touch-target-large: 64px;
+
+  /* Subtle Rounded Corners */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Subtle Modern Elevation Shadows */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+/* High Contrast Mode (User selectable via Settings) */
+body.theme-high-contrast {
+  --bg-primary: #000000;
+  --bg-surface: #0a0a0a;
+  --bg-surface-elevated: #1a1a1a;
+  --bg-card: #000000;
+
+  --border-primary: #ffe600;
+  --border-subtle: #ffd700;
+  --border-focus: #ffffff;
+
+  --text-primary: #ffffff;
+  --text-secondary: #ffff99;
+  --text-muted: #ffffcc;
+
+  --accent-primary: #ffe600;
+  --accent-primary-text: #000000;
+  --accent-action-start: #00ff66;
+  --accent-action-start-hover: #00cc52;
+  --accent-action-stop: #ff1744;
+  --accent-action-stop-hover: #d50000;
+
+  --accent-warning: #ffe600;
+  --accent-warning-bg: #222200;
+  --accent-info: #00e5ff;
+  --accent-info-bg: #002233;
+
+  --color-online: #00ff66;
+  --color-online-bg: #003311;
+  --color-offline: #ff334b;
+  --color-offline-bg: #330006;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+}
+
+/* Global Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--font-size-base);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Accessibility: High Visibility Focus Ring for Keyboard / Switch Navigation */
+:focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: 3px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Base button reset */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 1rem;
+}
