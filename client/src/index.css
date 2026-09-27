@@ -14,7 +14,7 @@
   --color-card-dark: #141412;    /* Dark section cards */
   --color-white: #FFFFFF;        /* Pure high-contrast white */
   
-  /* Editorial Color Tints (from reference design) */
+  /* Editorial Color Tints */
   --tint-mint: #D5EDE5;
   --tint-mint-dark: #00796B;
   --tint-lavender: #E6DAF5;
@@ -63,6 +63,15 @@
   padding: 0;
 }
 
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -76,7 +85,13 @@ body {
   font-family: var(--font-body);
   line-height: 1.5;
   min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Screen reader only utility */

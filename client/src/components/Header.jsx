@@ -119,7 +119,7 @@ export default function Header({
 
           {/* Profile Icon & Logout Button */}
           {currentUser ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="header-user-actions-group">
               <button
                 type="button"
                 className="btn-header-avatar"
