@@ -6,6 +6,11 @@
 export default function Header({
   isOnline,
   onOpenSettings,
+  onOpenRegister,
+  onOpenLogin,
+  currentUser,
+  onOpenAccount,
+  onLogout,
 }) {
   return (
     <header className="app-header" role="banner">
@@ -30,6 +35,60 @@ export default function Header({
           <span className="status-dot" aria-hidden="true" />
           <span className="status-label">{isOnline ? 'Online' : 'Offline'}</span>
         </div>
+
+        {/* Auth State Button */}
+        {currentUser ? (
+          <div className="header-auth-group">
+            <button
+              type="button"
+              id="btn-header-profile"
+              className="btn-header-user"
+              onClick={onOpenAccount}
+              aria-label={`View account profile for ${currentUser.name}`}
+              title={`Logged in as ${currentUser.name}`}
+            >
+              👤 <span className="header-user-name">{currentUser.name.split(' ')[0]}</span>
+            </button>
+            <button
+              type="button"
+              id="btn-header-logout"
+              className="btn-header-logout"
+              onClick={onLogout}
+              aria-label="Log out of account"
+              title="Log Out"
+            >
+              <span aria-hidden="true" className="logout-icon">⏻</span>
+              <span className="logout-text">Logout</span>
+            </button>
+          </div>
+        ) : (
+          <div className="header-auth-group">
+            {onOpenLogin && (
+              <button
+                type="button"
+                id="btn-login-header-toggle"
+                className="btn-settings"
+                onClick={onOpenLogin}
+                aria-label="Open user login"
+                title="Log In"
+              >
+                <span aria-hidden="true" className="settings-icon">🔑</span>
+              </button>
+            )}
+            {onOpenRegister && (
+              <button
+                type="button"
+                id="btn-register-header-toggle"
+                className="btn-settings"
+                onClick={onOpenRegister}
+                aria-label="Open user registration"
+                title="Register"
+              >
+                <span aria-hidden="true" className="settings-icon">👤</span>
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Small Touch-Friendly Settings Button */}
         <button

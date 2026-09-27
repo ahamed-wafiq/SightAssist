@@ -7,12 +7,15 @@
  * - Settings (Accessibility Preferences)
  */
 
-export default function NavigationBar({ activeTab, onSelectTab }) {
+export default function NavigationBar({ activeTab, onSelectTab, currentUser }) {
   const tabs = [
     { id: 'assist', label: 'Assist', icon: '👁️', title: 'Live Vision Assistant' },
     { id: 'history', label: 'History', icon: '📋', title: 'Detection History' },
     { id: 'emergency', label: 'Emergency', icon: '🚨', title: 'Emergency SOS' },
     { id: 'settings', label: 'Settings', icon: '⚙️', title: 'Accessibility Settings' },
+    currentUser
+      ? { id: 'account', label: 'Account', icon: '👤', title: 'User Account' }
+      : { id: 'login', label: 'Login', icon: '🔑', title: 'Account Login' },
   ];
 
   return (

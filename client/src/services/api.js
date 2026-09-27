@@ -190,3 +190,202 @@ export async function triggerEmergencySOS(details = {}) {
     throw err;
   }
 }
+
+/**
+ * Register a new user in MongoDB through Express backend
+ * @route POST http://localhost:5000/api/users/register
+ * @param {Object} userData - { name, email, password }
+ * @returns {Promise<{success: boolean, message?: string, user?: Object, error?: string}>}
+ */
+export async function registerUser({ name, email, password }) {
+  try {
+    const response = await fetch(`${API_BASE}/users/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      return {
+        success: false,
+        error: 'Invalid response received from server. Please verify the backend is running.',
+      };
+    }
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data?.message || `Registration failed (HTTP ${response.status})`,
+      };
+    }
+
+    return {
+      success: true,
+      message: data.message || 'User registered successfully',
+      user: data.user,
+    };
+  } catch (err) {
+    // Network errors or backend offline
+    return {
+      success: false,
+      error: 'Backend is unavailable. Please make sure the Express server is running on http://localhost:5000.',
+    };
+  }
+}
+
+/**
+ * Authentication Token Management (Secure client storage for JWT)
+ * Note: Never store plain-text passwords on the client.
+ */
+const TOKEN_KEY = 'sightassist_jwt_token';
+
+export function getAuthToken() {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setAuthToken(token) {
+  try {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    }
+  } catch (err) {
+    console.error('Failed to store JWT in localStorage:', err);
+  }
+}
+
+export function removeAuthToken() {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch (err) {
+    console.error('Failed to remove JWT from localStorage:', err);
+  }
+}
+
+/**
+ * Authenticate user with Email & Password
+ * @route POST http://localhost:5000/api/users/login
+ * @param {Object} credentials - { email, password }
+ * @returns {Promise<{success: boolean, message?: string, token?: string, user?: Object, error?: string}>}
+ */
+export async function loginUser({ email, password }) {
+  try {
+    const response = await fetch(`${API_BASE}/users/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      return {
+        success: false,
+        error: 'Invalid response from server. Please verify backend is running.',
+      };
+    }
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data?.message || 'Invalid email or password',
+      };
+    }
+
+    // Securely save JWT in localStorage
+    if (data.token) {
+      setAuthToken(data.token);
+    }
+
+    return {
+      success: true,
+      message: data.message || 'Login successful',
+      token: data.token,
+      user: data.user,
+    };
+  } catch {
+    return {
+      success: false,
+      error: 'Backend is unavailable. Please make sure the Express server is running on http://localhost:5000.',
+    };
+  }
+}
+
+/**
+ * Fetch currently authenticated user profile from protected endpoint
+ * @route GET http://localhost:5000/api/users/me
+ * @returns {Promise<{success: boolean, user?: Object, error?: string}>}
+ */
+export async function getCurrentUser() {
+  const token = getAuthToken();
+  if (!token) {
+    return { success: false, error: 'No authentication token found' };
+  }
+
+  try {
+    const response = await fetch(`${API_BASE}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 401) {
+      // Token is invalid or expired
+      removeAuthToken();
+      return { success: false, error: 'Session expired. Please log in again.' };
+    }
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      return { success: false, error: 'Invalid response from server.' };
+    }
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data?.message || 'Failed to fetch user profile',
+      };
+    }
+
+    return {
+      success: true,
+      user: data.user,
+    };
+  } catch {
+    return {
+      success: false,
+      error: 'Backend is unavailable. Please check your connection.',
+    };
+  }
+}
+
+/**
+ * Logout current user
+ */
+export function logoutUser() {
+  removeAuthToken();
+}
+
+

@@ -9,6 +9,9 @@ import NavigationBar from './components/NavigationBar';
 import HistoryPage from './components/HistoryPage';
 import EmergencyPage from './components/EmergencyPage';
 import SettingsPage from './components/SettingsPage';
+import RegisterPage from './components/RegisterPage';
+import LoginPage from './components/LoginPage';
+import AccountPage from './components/AccountPage';
 import speechService from './utils/speech';
 import voiceManager from './utils/voiceManager';
 import {
@@ -20,7 +23,9 @@ import { predictFrame, checkMLServiceHealth } from './services/mlService';
 import {
   getStoredSettings,
   saveStoredSettings,
-  logDetection,
+  getCurrentUser,
+  logoutUser,
+  getAuthToken,
 } from './services/api';
 import './App.css';
 
@@ -40,8 +45,11 @@ const DEFAULT_SETTINGS = {
 };
 
 function App() {
-  // Navigation State ('assist' | 'history' | 'emergency' | 'settings')
+  // Navigation State ('assist' | 'history' | 'emergency' | 'settings' | 'register' | 'login' | 'account')
   const [activeTab, setActiveTab] = useState('assist');
+
+  // Authenticated User State (JWT in localStorage)
+  const [currentUser, setCurrentUser] = useState(null);
 
   // User Settings State (persisted in MongoDB)
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
@@ -94,6 +102,22 @@ function App() {
     detectionsRef.current = detections;
     primaryDetectionRef.current = primaryDetection;
   }, [detections, primaryDetection]);
+
+  // Load Authenticated User Profile via JWT on mount
+  useEffect(() => {
+    const verifyUserSession = async () => {
+      const token = getAuthToken();
+      if (token) {
+        const result = await getCurrentUser();
+        if (result.success && result.user) {
+          setCurrentUser(result.user);
+        } else {
+          setCurrentUser(null);
+        }
+      }
+    };
+    verifyUserSession();
+  }, []);
 
   // Load User Settings from MongoDB on mount
   useEffect(() => {
@@ -432,6 +456,19 @@ function App() {
     await saveStoredSettings(newSettings);
   };
 
+  // Authentication handlers
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user);
+    // Redirect directly to SightAssist dashboard
+    setActiveTab('assist');
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
+    setActiveTab('login');
+  };
+
   // Clean up timers on unmount
   useEffect(() => {
     return () => {
@@ -443,10 +480,15 @@ function App() {
 
   return (
     <div className="app-shell">
-      {/* 1. Top Header: Logo, Status Dot, Settings Tab Shortcut */}
+      {/* 1. Top Header: Logo, Status Dot, Settings & Auth Shortcut */}
       <Header
         isOnline={mlStatus.online || backendConnected}
+        currentUser={currentUser}
         onOpenSettings={() => setActiveTab('settings')}
+        onOpenRegister={() => setActiveTab('register')}
+        onOpenLogin={() => setActiveTab('login')}
+        onOpenAccount={() => setActiveTab('account')}
+        onLogout={handleLogout}
       />
 
       {/* 2. Main Content View according to activeTab */}
@@ -511,9 +553,33 @@ function App() {
         />
       )}
 
+      {activeTab === 'register' && (
+        <RegisterPage
+          onBackToAssist={() => setActiveTab('assist')}
+          onGoToLogin={() => setActiveTab('login')}
+        />
+      )}
+
+      {activeTab === 'login' && (
+        <LoginPage
+          onLoginSuccess={handleLoginSuccess}
+          onGoToRegister={() => setActiveTab('register')}
+          onBackToAssist={() => setActiveTab('assist')}
+        />
+      )}
+
+      {activeTab === 'account' && (
+        <AccountPage
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          onBackToAssist={() => setActiveTab('assist')}
+        />
+      )}
+
       {/* 3. Bottom Accessible Navigation Bar */}
       <NavigationBar
         activeTab={activeTab}
+        currentUser={currentUser}
         onSelectTab={(tab) => {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });
