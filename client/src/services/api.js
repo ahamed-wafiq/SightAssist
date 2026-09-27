@@ -4,14 +4,33 @@
  */
 
 /**
- * Backend URLs (Render Cloud Deployment & Local Dev Fallback)
+ * Backend URLs (Render Cloud Deployment & Environment Config)
  */
 export const RENDER_BACKEND_URL = 'https://sightassist.onrender.com';
-export const API_BASE =
+export const BACKEND_URL = (
+  import.meta.env.VITE_API_URL ||
   import.meta.env.VITE_BACKEND_URL ||
-  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    ? 'http://localhost:5000/api'
-    : `${RENDER_BACKEND_URL}/api`);
+  RENDER_BACKEND_URL
+).replace(/\/+$/, '');
+
+export const API_BASE = `${BACKEND_URL}/api`;
+
+/**
+ * Check Express Backend health status (/api/health)
+ * @returns {Promise<boolean>}
+ */
+export async function checkBackendHealth() {
+  try {
+    const res = await fetch(`${API_BASE}/health`);
+    if (res.ok) {
+      const data = await res.json();
+      return data.status === 'ok';
+    }
+    return false;
+  } catch (_) {
+    return false;
+  }
+}
 
 /**
  * Fetch User Settings from MongoDB
@@ -201,7 +220,7 @@ export async function triggerEmergencySOS(details = {}) {
 
 /**
  * Register a new user in MongoDB through Express backend
- * @route POST http://localhost:5000/api/users/register
+ * @route POST /api/users/register
  * @param {Object} userData - { name, email, password }
  * @returns {Promise<{success: boolean, message?: string, user?: Object, error?: string}>}
  */
@@ -245,7 +264,7 @@ export async function registerUser({ name, email, password }) {
     // Network errors or backend offline
     return {
       success: false,
-      error: 'Backend is unavailable. Please make sure the Express server is running on http://localhost:5000.',
+      error: `Backend is unavailable at ${BACKEND_URL}. Please verify the server is running.`,
     };
   }
 }
@@ -284,7 +303,7 @@ export function removeAuthToken() {
 
 /**
  * Authenticate user with Email & Password
- * @route POST http://localhost:5000/api/users/login
+ * @route POST /api/users/login
  * @param {Object} credentials - { email, password }
  * @returns {Promise<{success: boolean, message?: string, token?: string, user?: Object, error?: string}>}
  */
@@ -332,14 +351,14 @@ export async function loginUser({ email, password }) {
   } catch {
     return {
       success: false,
-      error: 'Backend is unavailable. Please make sure the Express server is running on http://localhost:5000.',
+      error: `Backend is unavailable at ${BACKEND_URL}. Please verify the server is running.`,
     };
   }
 }
 
 /**
  * Fetch currently authenticated user profile from protected endpoint
- * @route GET http://localhost:5000/api/users/me
+ * @route GET /api/users/me
  * @returns {Promise<{success: boolean, user?: Object, error?: string}>}
  */
 export async function getCurrentUser() {

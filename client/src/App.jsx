@@ -29,6 +29,7 @@ import {
   getCurrentUser,
   logoutUser,
   getAuthToken,
+  checkBackendHealth,
 } from './services/api';
 import './App.css';
 
@@ -151,20 +152,11 @@ function App() {
     };
   }, []);
 
-  // Poll Express Backend (/api/health on port 5000)
+  // Poll Express Backend health status
   useEffect(() => {
     const checkBackend = async () => {
-      try {
-        const res = await fetch('http://localhost:5000/api/health');
-        if (res.ok) {
-          const data = await res.json();
-          setBackendConnected(data.status === 'ok');
-          return;
-        }
-        setBackendConnected(false);
-      } catch (_) {
-        setBackendConnected(false);
-      }
+      const isOnline = await checkBackendHealth();
+      setBackendConnected(isOnline);
     };
 
     checkBackend();

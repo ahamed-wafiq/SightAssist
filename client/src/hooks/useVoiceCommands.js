@@ -71,25 +71,22 @@ export function useVoiceCommands({
 
   // Keep latest refs to avoid stale closures in recognition callbacks
   const activeTabRef = useRef(activeTab);
-  activeTabRef.current = activeTab;
-
   const navigateRef = useRef(navigate);
-  navigateRef.current = navigate;
-
   const startDetectionRef = useRef(startDetection);
-  startDetectionRef.current = startDetection;
-
   const stopDetectionRef = useRef(stopDetection);
-  stopDetectionRef.current = stopDetection;
-
   const enableVoiceRef = useRef(enableVoice);
-  enableVoiceRef.current = enableVoice;
-
   const disableVoiceRef = useRef(disableVoice);
-  disableVoiceRef.current = disableVoice;
-
   const onCommandExecutedRef = useRef(onCommandExecuted);
-  onCommandExecutedRef.current = onCommandExecuted;
+
+  useEffect(() => {
+    activeTabRef.current = activeTab;
+    navigateRef.current = navigate;
+    startDetectionRef.current = startDetection;
+    stopDetectionRef.current = stopDetection;
+    enableVoiceRef.current = enableVoice;
+    disableVoiceRef.current = disableVoice;
+    onCommandExecutedRef.current = onCommandExecuted;
+  });
 
   const showStatus = useCallback((msg, durationMs = 4000) => {
     setStatusMessage(msg);
