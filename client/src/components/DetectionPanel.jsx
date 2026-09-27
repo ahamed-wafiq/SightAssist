@@ -1,8 +1,14 @@
 /**
  * DetectionPanel Component
- * Polished accessibility card presenting the most critical current obstacle:
- * - Current detection: OBJECT (huge), DIRECTION (LEFT/CENTER/RIGHT), APPROXIMATE DISTANCE (~X.X m)
- * - Smaller cards for secondary objects in the same scene
+ * Editorial Brutalist Detection Cards:
+ * Shows:
+ * - Detected objects
+ * - Object name (Huge display)
+ * - Approximate distance (e.g. 2.4m)
+ * - Position: LEFT / CENTER / RIGHT
+ * Example:
+ * "PERSON — LEFT — 2.4m"
+ * "OBSTACLE — CENTER — 1.2m"
  */
 export default function DetectionPanel({
   detections = [],
@@ -14,158 +20,121 @@ export default function DetectionPanel({
   const secondaryDetections = hasDetections ? detections.slice(1) : [];
 
   return (
-    <section className="detection-container" aria-label="Detected Obstacle Information">
+    <section className="detection-editorial-section" aria-label="Detected Objects Information">
       {/* Error alert if ML is unavailable */}
       {detectionError && (
-        <div className="alert-banner alert-banner--warning" role="alert">
-          <span className="alert-icon" aria-hidden="true">⚠️</span>
-          <div className="alert-body">
+        <div className="brutalist-alert brutalist-alert--warning" role="alert">
+          <span className="alert-emoji" aria-hidden="true">⚠️</span>
+          <div className="alert-text">
             <strong>System Notice:</strong> {detectionError}
           </div>
         </div>
       )}
 
-      {/* Prominent Current Detection Card */}
+      {/* Primary Detection Card */}
       <div
-        className={`prominent-detection-card ${
-          primaryDetection ? 'prominent-detection-card--active' : ''
+        className={`detection-hero-card ${
+          primaryDetection ? 'detection-hero-card--detected' : ''
         }`}
         role="region"
         aria-live="polite"
       >
-        <div className="card-top-header">
-          <span className="card-kicker">CURRENT OBSTACLE</span>
-          {isAssisting && (
-            <span className="live-scanning-tag" aria-hidden="true">
-              <span className="tag-dot" /> Live
-            </span>
-          )}
+        <div className="det-card-kicker-row">
+          <span className="det-card-label">PRIMARY OBSTACLE IN VIEW</span>
+          <span className="det-live-badge">
+            <span className="live-dot" />
+            {isAssisting ? 'ACTIVE SCAN' : 'READY'}
+          </span>
         </div>
 
         {primaryDetection ? (
-          <div className="detection-hero-layout">
-            {/* 1. Object Name */}
-            <div className="hero-object-row">
-              <h2 className="hero-object-name">
+          <div className="det-hero-body">
+            {/* Top Object + Confidence */}
+            <div className="det-hero-header">
+              <h2 className="det-object-headline">
                 {(primaryDetection.object || 'OBSTACLE').toUpperCase()}
               </h2>
-              <span className="hero-confidence-badge">
-                {Math.round((primaryDetection.confidence || 0) * 100)}%
+              <span className="det-confidence-pill">
+                {Math.round((primaryDetection.confidence || 0) * 100)}% MATCH
               </span>
             </div>
 
-            {/* 2. Direction & Distance Grid */}
-            <div className="hero-details-grid">
-              {/* Direction Indicator */}
-              <div className="detail-item">
-                <span className="detail-label">DIRECTION</span>
+            {/* Combined formatted example badge: "PERSON — LEFT — 2.4m" */}
+            <div className="det-summary-callout">
+              <span className="det-summary-text">
+                {(primaryDetection.object || 'OBSTACLE').toUpperCase()} —{' '}
+                {(primaryDetection.position || 'CENTER').toUpperCase()} —{' '}
+                {primaryDetection.approximate_distance != null
+                  ? `${primaryDetection.approximate_distance}m`
+                  : 'N/A'}
+              </span>
+            </div>
+
+            {/* Metric Blocks: Position & Distance */}
+            <div className="det-metrics-columns">
+              <div className="det-metric-box">
+                <span className="metric-box-label">POSITION</span>
                 <div
-                  className={`direction-badge direction-badge--${(
+                  className={`det-dir-badge det-dir-badge--${(
                     primaryDetection.position || 'center'
                   ).toLowerCase()}`}
                 >
-                  {(primaryDetection.position || 'center').toLowerCase() === 'left' && (
-                    <>
-                      <span className="dir-arrow">←</span>
-                      <span>LEFT</span>
-                    </>
-                  )}
-                  {(primaryDetection.position || 'center').toLowerCase() === 'center' && (
-                    <>
-                      <span className="dir-arrow">↑</span>
-                      <span>CENTER</span>
-                    </>
-                  )}
-                  {(primaryDetection.position || 'center').toLowerCase() === 'right' && (
-                    <>
-                      <span className="dir-arrow">→</span>
-                      <span>RIGHT</span>
-                    </>
-                  )}
+                  {(primaryDetection.position || 'center').toLowerCase() === 'left' && '← LEFT'}
+                  {(primaryDetection.position || 'center').toLowerCase() === 'center' && '↑ CENTER'}
+                  {(primaryDetection.position || 'center').toLowerCase() === 'right' && '→ RIGHT'}
                 </div>
               </div>
 
-              {/* Approximate Distance */}
-              <div className="detail-item">
-                <span className="detail-label">APPROX. DISTANCE</span>
-                <div className="distance-display-group">
-                  <span className="distance-value">
-                    {primaryDetection.approximate_distance != null
-                      ? `~${primaryDetection.approximate_distance} m`
-                      : 'Unavailable'}
-                  </span>
-                  {primaryDetection.approximate_distance != null && (
-                    <span
-                      className={`proximity-pill ${
-                        primaryDetection.approximate_distance <= 1.0
-                          ? 'proximity-pill--close'
-                          : primaryDetection.approximate_distance <= 2.2
-                          ? 'proximity-pill--near'
-                          : 'proximity-pill--mid'
-                      }`}
-                    >
-                      {primaryDetection.approximate_distance <= 1.0
-                        ? 'CLOSE'
-                        : primaryDetection.approximate_distance <= 2.2
-                        ? 'NEAR'
-                        : 'SAFE'}
-                    </span>
-                  )}
+              <div className="det-metric-box">
+                <span className="metric-box-label">APPROXIMATE DISTANCE</span>
+                <div className="det-dist-number">
+                  {primaryDetection.approximate_distance != null
+                    ? `${primaryDetection.approximate_distance}m`
+                    : 'Measuring...'}
                 </div>
               </div>
             </div>
           </div>
-        ) : isAssisting ? (
-          <div className="detection-clear-state">
-            <span className="clear-symbol" aria-hidden="true">✓</span>
-            <div>
-              <h3 className="clear-headline">Path Clear</h3>
-              <p className="clear-subtext">No obstacles detected directly ahead.</p>
-            </div>
-          </div>
         ) : (
-          <div className="detection-idle-state">
-            <span className="idle-symbol" aria-hidden="true">ℹ️</span>
-            <div>
-              <p className="idle-headline">Assistance is paused</p>
-              <p className="idle-subtext">
-                Tap <strong>START ASSISTANCE</strong> below to begin real-time voice guidance.
-              </p>
+          <div className="det-idle-state">
+            <div className="idle-indicator-circle">👁️</div>
+            <h3 className="idle-title">PATH CLEAR</h3>
+            <p className="idle-sub">
+              {isAssisting
+                ? 'Camera is actively scanning for obstacles ahead in real time.'
+                : 'Press START DETECTION to activate real-time object and distance scanning.'}
+            </p>
+
+            {/* Example preview tags matching prompt requirements */}
+            <div className="idle-example-chips">
+              <span className="idle-chip">Example: PERSON — LEFT — 2.4m</span>
+              <span className="idle-chip">Example: OBSTACLE — CENTER — 1.2m</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Secondary Detections (Smaller clean cards) */}
+      {/* Secondary Detections Grid */}
       {secondaryDetections.length > 0 && (
-        <div className="secondary-objects-section">
-          <span className="secondary-objects-title">
-            Other Detected Objects ({secondaryDetections.length})
-          </span>
-          <div className="secondary-cards-grid">
-            {secondaryDetections.map((item, idx) => {
-              const pos = (item.position || 'center').toLowerCase();
-              return (
-                <div key={`${item.object}-${idx}`} className="secondary-card">
-                  <div className="secondary-card-main">
-                    <strong className="secondary-name">
-                      {(item.object || '').toUpperCase()}
-                    </strong>
-                    <span className="secondary-pos">
-                      {pos === 'left' ? '← Left' : pos === 'right' ? 'Right →' : '↑ Center'}
-                    </span>
-                  </div>
-                  <div className="secondary-card-meta">
-                    {item.approximate_distance != null && (
-                      <span className="secondary-dist">~{item.approximate_distance}m</span>
-                    )}
-                    <span className="secondary-conf">
-                      {Math.round((item.confidence || 0) * 100)}%
-                    </span>
-                  </div>
+        <div className="secondary-detections-editorial">
+          <span className="secondary-title">ADDITIONAL DETECTIONS ({secondaryDetections.length})</span>
+          <div className="secondary-grid">
+            {secondaryDetections.map((item, idx) => (
+              <div key={idx} className="secondary-card">
+                <div className="sec-card-top">
+                  <span className="sec-obj-name">{(item.object || 'Object').toUpperCase()}</span>
+                  <span className="sec-pos-tag">{(item.position || 'Center').toUpperCase()}</span>
                 </div>
-              );
-            })}
+                <div className="sec-card-bottom">
+                  <span className="sec-dist">
+                    {item.approximate_distance != null ? `~${item.approximate_distance}m` : 'In frame'}
+                  </span>
+                  <span className="sec-conf">
+                    {Math.round((item.confidence || 0) * 100)}%
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

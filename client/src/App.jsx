@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import HomePage from './components/HomePage';
 import Header from './components/Header';
 import AssistanceControls from './components/AssistanceControls';
 import CameraView from './components/CameraView';
@@ -45,8 +46,8 @@ const DEFAULT_SETTINGS = {
 };
 
 function App() {
-  // Navigation State ('assist' | 'history' | 'emergency' | 'settings' | 'register' | 'login' | 'account')
-  const [activeTab, setActiveTab] = useState('assist');
+  // Navigation State ('home' | 'assist' | 'history' | 'emergency' | 'settings' | 'register' | 'login' | 'account')
+  const [activeTab, setActiveTab] = useState('home');
 
   // Authenticated User State (JWT in localStorage)
   const [currentUser, setCurrentUser] = useState(null);
@@ -480,20 +481,37 @@ function App() {
 
   return (
     <div className="app-shell">
-      {/* 1. Top Header: Logo, Status Dot, Settings & Auth Shortcut */}
+      {/* 1. Desktop Top Header: Logo, Nav Links (Home, Assist, History, Settings, Profile, Emergency), Status Dot */}
       <Header
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         isOnline={mlStatus.online || backendConnected}
         currentUser={currentUser}
-        onOpenSettings={() => setActiveTab('settings')}
-        onOpenRegister={() => setActiveTab('register')}
-        onOpenLogin={() => setActiveTab('login')}
-        onOpenAccount={() => setActiveTab('account')}
         onLogout={handleLogout}
       />
 
       {/* 2. Main Content View according to activeTab */}
+      {activeTab === 'home' && (
+        <HomePage
+          onStartAssist={startAssistance}
+          onOpenEmergency={() => {
+            setActiveTab('emergency');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      )}
+
       {activeTab === 'assist' && (
         <main className="assist-view" role="main">
+          {/* Assist Header */}
+          <div className="assist-view-heading-wrap">
+            <span className="assist-view-kicker">REAL-TIME YOLO VISION</span>
+            <h1 className="assist-view-title">ASSIST LIVE</h1>
+          </div>
+
           {/* Live Camera View with Real-time Bounding Boxes & Direction Strip */}
           <CameraView
             ref={cameraRef}
@@ -516,7 +534,7 @@ function App() {
             detectionError={detectionError || cameraError}
           />
 
-          {/* Voice Guidance Status: READY / LISTENING / SPEAKING / MUTED */}
+          {/* Voice Guidance Status: READY TO HELP / LISTENING / SPEAKING / MUTED */}
           <VoiceIndicator
             isSpeaking={isSpeaking}
             isAssisting={isAssisting}
@@ -529,7 +547,7 @@ function App() {
           {/* Hands-Free Voice Commands Bar */}
           <VoiceCommandsBar onCommandTriggered={handleVoiceCommand} />
 
-          {/* Primary Action Button: START ASSISTANCE / STOP ASSISTANCE */}
+          {/* Primary Action Button: START DETECTION / STOP DETECTION */}
           <AssistanceControls
             isAssisting={isAssisting}
             onToggleAssistance={handleToggleAssistance}
@@ -576,10 +594,9 @@ function App() {
         />
       )}
 
-      {/* 3. Bottom Accessible Navigation Bar */}
+      {/* 3. Mobile Fixed Bottom Navigation Bar (Home | Assist | History | Settings) */}
       <NavigationBar
         activeTab={activeTab}
-        currentUser={currentUser}
         onSelectTab={(tab) => {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });

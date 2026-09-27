@@ -3,16 +3,10 @@ import { loginUser } from '../services/api';
 
 /**
  * LoginPage Component
- * 
- * Provides a clean, accessible login form connecting
- * the React frontend to Express + MongoDB (POST /api/users/login).
- *
- * Features:
- * - Email & Password validation
- * - Clear error handling (invalid credentials, missing fields, server offline)
- * - Secure JWT storage on client (localStorage)
- * - Never stores user's password
- * - Redirects to SightAssist dashboard upon success
+ * Bold Editorial / Brutalist Redesign:
+ * Heading: "WELCOME BACK"
+ * Warm yellow container card with black borders, clean minimal inputs.
+ * Connects to Express + MongoDB (POST /api/users/login).
  */
 export default function LoginPage({ onLoginSuccess, onGoToRegister, onBackToAssist }) {
   const [email, setEmail] = useState('');
@@ -27,7 +21,6 @@ export default function LoginPage({ onLoginSuccess, onGoToRegister, onBackToAssi
     setErrorMessage('');
     setSuccessMessage('');
 
-    // 1. Missing fields check
     if (!email.trim()) {
       setErrorMessage('Please enter your email address.');
       return;
@@ -47,10 +40,9 @@ export default function LoginPage({ onLoginSuccess, onGoToRegister, onBackToAssi
       });
 
       if (result.success) {
-        setSuccessMessage('Login successful! Redirecting to assistant...');
-        setPassword(''); // Clear password from component memory
+        setSuccessMessage('Login successful! Welcome back.');
+        setPassword('');
 
-        // Notify parent App component with authenticated user data
         if (onLoginSuccess) {
           setTimeout(() => {
             onLoginSuccess(result.user);
@@ -60,143 +52,105 @@ export default function LoginPage({ onLoginSuccess, onGoToRegister, onBackToAssi
         setErrorMessage(result.error || 'Invalid email or password.');
       }
     } catch {
-      setErrorMessage(
-        'Unable to connect to the backend server. Please verify Express is running on http://localhost:5000.'
-      );
+      setErrorMessage('Backend is unavailable. Please ensure server is running.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="page-container" role="main" aria-label="User Login Page">
-      {/* Page Header */}
-      <div className="page-header">
-        <div>
-          <h2 className="page-title">Account Login</h2>
-          <p className="page-subtitle">Sign in to access your saved SightAssist preferences</p>
+    <div className="editorial-auth-wrap" role="main" aria-label="User Login">
+      <div className="editorial-auth-card">
+        {/* Top Tag & Back */}
+        <div className="auth-card-top">
+          <span className="auth-kicker">SIGHTASSIST ACCOUNT</span>
+          {onBackToAssist && (
+            <button
+              type="button"
+              className="btn-auth-back"
+              onClick={onBackToAssist}
+              aria-label="Back to assistant"
+            >
+              ← BACK
+            </button>
+          )}
         </div>
-        {onBackToAssist && (
-          <button
-            type="button"
-            className="btn-back-assist"
-            onClick={onBackToAssist}
-            aria-label="Back to camera assistant"
-          >
-            ← Back
-          </button>
-        )}
-      </div>
 
-      {/* Main Login Card */}
-      <div className="register-card">
-        {/* Success Alert */}
+        {/* Required Headline */}
+        <h1 className="auth-giant-title">WELCOME BACK</h1>
+        <p className="auth-sub-desc">
+          Sign in to access your calibrated accessibility profiles, saved routes, and history logs.
+        </p>
+
+        {/* Alerts */}
         {successMessage && (
-          <div className="register-alert register-alert--success" role="alert" aria-live="polite">
-            <span className="register-alert-icon" aria-hidden="true">✅</span>
-            <div className="register-alert-content">
-              <strong>Success</strong>
-              <p>{successMessage}</p>
-            </div>
+          <div className="brutalist-alert brutalist-alert--notice" role="alert">
+            ✓ {successMessage}
           </div>
         )}
 
-        {/* Error Alert */}
         {errorMessage && (
-          <div className="register-alert register-alert--error" role="alert" aria-live="assertive">
-            <span className="register-alert-icon" aria-hidden="true">⚠️</span>
-            <div className="register-alert-content">
-              <strong>Login Failed</strong>
-              <p>{errorMessage}</p>
-            </div>
+          <div className="brutalist-alert brutalist-alert--warning" role="alert">
+            ⚠️ {errorMessage}
           </div>
         )}
 
-        {/* Login Form */}
-        <form className="register-form" onSubmit={handleSubmit} noValidate>
-          {/* Email Field */}
-          <div className="form-field">
-            <label htmlFor="login-email" className="form-label">
-              Email Address <span className="field-required">*</span>
+        {/* Minimal Clean Form */}
+        <form onSubmit={handleSubmit} className="editorial-form" noValidate>
+          <div className="editorial-form-group">
+            <label htmlFor="login-email" className="editorial-label">
+              EMAIL ADDRESS
             </label>
             <input
               id="login-email"
               type="email"
-              className="form-input"
-              placeholder="e.g. user@example.com"
+              className="editorial-input"
+              placeholder="name@example.com"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (errorMessage) setErrorMessage('');
-              }}
-              autoComplete="email"
+              onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              autoComplete="email"
               required
             />
           </div>
 
-          {/* Password Field */}
-          <div className="form-field">
-            <label htmlFor="login-password" className="form-label">
-              Password <span className="field-required">*</span>
+          <div className="editorial-form-group">
+            <label htmlFor="login-password" className="editorial-label">
+              PASSWORD
             </label>
             <input
               id="login-password"
               type="password"
-              className="form-input"
-              placeholder="Enter your password"
+              className="editorial-input"
+              placeholder="••••••••"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (errorMessage) setErrorMessage('');
-              }}
-              autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              autoComplete="current-password"
               required
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="form-submit-row">
-            <button
-              id="btn-login-submit"
-              type="submit"
-              className={`btn-primary-action btn-register-submit ${isLoading ? 'btn-loading' : ''}`}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="spinner-dot" aria-hidden="true" />
-                  <span>Logging in...</span>
-                </>
-              ) : (
-                'Log In'
-              )}
-            </button>
-          </div>
+          <button
+            type="submit"
+            id="btn-login-submit"
+            className="btn-brutalist btn-brutalist--black btn-brutalist--full"
+            disabled={isLoading}
+          >
+            {isLoading ? 'SIGNING IN...' : 'SIGN IN →'}
+          </button>
         </form>
 
-        {/* Navigation to Registration */}
-        <div className="auth-switch-box">
-          <span>Don't have an account yet?</span>
+        {/* Switch to Register */}
+        <div className="auth-card-footer">
+          <span>DON'T HAVE AN ACCOUNT?</span>
           <button
             type="button"
             className="btn-auth-switch"
             onClick={onGoToRegister}
           >
-            Create an Account
+            CREATE ONE HERE
           </button>
-        </div>
-
-        {/* Architecture Note */}
-        <div className="register-info-box">
-          <span className="info-icon" aria-hidden="true">🔒</span>
-          <div className="info-content">
-            <strong>Secure JWT Authentication:</strong>
-            <p>
-              Your password is encrypted with bcrypt on the server. On successful login, a JWT is issued to authenticate protected endpoints.
-            </p>
-          </div>
         </div>
       </div>
     </div>

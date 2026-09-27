@@ -1,98 +1,59 @@
 /* ==========================================================================
-   SightAssist - Accessible Core Design System
-   Clean, modern, accessibility-first design system
-   Light/neutral background by default + High-contrast mode support
+   SightAssist - Bold Editorial & Modern Brutalist Design System
+   Color Palette: Warm Sunflower Yellow (#FFCE29) + Deep Black (#0E0E0D)
+   Typography: Bebas Neue, Syne, Space Grotesk, Outfit, Inter
    ========================================================================== */
 
 :root {
-  /* Light / Neutral Theme (Default) */
-  --bg-primary: #f8fafc;        /* Clean light slate */
-  --bg-surface: #ffffff;        /* Pure white cards */
-  --bg-surface-elevated: #f1f5f9; /* Subtle elevated container */
-  --bg-card: #ffffff;
+  /* Warm Yellow & Pure Black Brutalist Core Palette */
+  --color-yellow: #FFCE29;       /* Vibrant sunflower golden yellow */
+  --color-yellow-light: #FFDF6D; /* Highlight yellow */
+  --color-yellow-dark: #E5B418;  /* Pressed yellow */
+  --color-black: #0E0E0D;        /* Deep matte black */
+  --color-charcoal: #1C1B17;     /* Canvas outer backdrop */
+  --color-card-dark: #141412;    /* Dark section cards */
+  --color-white: #FFFFFF;        /* Pure high-contrast white */
+  
+  /* Editorial Color Tints (from reference design) */
+  --tint-mint: #D5EDE5;
+  --tint-mint-dark: #00796B;
+  --tint-lavender: #E6DAF5;
+  --tint-lavender-dark: #5B21B6;
+  --tint-sky: #D6EBF8;
+  --tint-sky-dark: #0369A1;
+  --tint-coral: #FF5A36;
+  --tint-coral-dark: #C62828;
 
-  --border-primary: #cbd5e1;    /* Slate-300 accessible borders */
-  --border-subtle: #e2e8f0;     /* Slate-200 dividers */
-  --border-focus: #0f172a;      /* High contrast keyboard focus ring */
+  /* Theme Tokens */
+  --bg-canvas: #181714;
+  --bg-primary: #FFCE29;
+  --bg-surface: #0E0E0D;
+  --bg-card: #FFFFFF;
 
-  --text-primary: #0f172a;      /* Slate-900 (ultra-readable contrast: >12:1) */
-  --text-secondary: #334155;    /* Slate-700 */
-  --text-muted: #64748b;        /* Slate-500 */
+  --border-thick: 3px solid #0E0E0D;
+  --border-medium: 2px solid #0E0E0D;
+  --border-thin: 1px solid rgba(0, 0, 0, 0.2);
+  --border-white: 2px solid rgba(255, 255, 255, 0.2);
 
-  /* Semantic Accessibility Accents */
-  --accent-primary: #0f172a;    /* Deep navy / slate primary */
-  --accent-primary-text: #ffffff;
+  --text-dark: #0E0E0D;
+  --text-light: #FFFFFF;
+  --text-muted: #8E8D88;
+  --text-yellow: #FFCE29;
 
-  --accent-action-start: #047857; /* Deep accessible Emerald Green (contrast >4.5:1) */
-  --accent-action-start-hover: #065f46;
-  --accent-action-stop: #be123c;  /* Deep accessible Rose/Crimson (contrast >4.5:1) */
-  --accent-action-stop-hover: #9f1239;
+  /* Typography */
+  --font-display: 'Bebas Neue', 'Syne', sans-serif;
+  --font-accent: 'Syne', 'Bebas Neue', sans-serif;
+  --font-body: 'Space Grotesk', 'Outfit', -apple-system, sans-serif;
 
-  --accent-warning: #b45309;    /* Accessible Amber (contrast >4.5:1 on light) */
-  --accent-warning-bg: #fef3c7;
-  --accent-info: #0369a1;       /* Accessible Cyan/Blue */
-  --accent-info-bg: #e0f2fe;
+  /* Brutalist Shadows & Radii */
+  --radius-hero: 44px;
+  --radius-card: 32px;
+  --radius-sm: 16px;
+  --radius-pill: 9999px;
 
-  --color-online: #15803d;      /* Accessible Green */
-  --color-online-bg: #dcfce7;
-  --color-offline: #b91c1c;     /* Accessible Red */
-  --color-offline-bg: #fee2e2;
-
-  /* Typography (Minimum 18px base for accessibility) */
-  --font-family-primary: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-base: 18px;
-
-  /* Touch Targets (Mobile-first accessibility standard: min 48px-64px) */
-  --touch-target-min: 48px;
-  --touch-target-large: 64px;
-
-  /* Subtle Rounded Corners */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-full: 9999px;
-
-  /* Subtle Modern Elevation Shadows */
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.12);
-}
-
-/* High Contrast Mode (User selectable via Settings) */
-body.theme-high-contrast {
-  --bg-primary: #000000;
-  --bg-surface: #0a0a0a;
-  --bg-surface-elevated: #1a1a1a;
-  --bg-card: #000000;
-
-  --border-primary: #ffe600;
-  --border-subtle: #ffd700;
-  --border-focus: #ffffff;
-
-  --text-primary: #ffffff;
-  --text-secondary: #ffff99;
-  --text-muted: #ffffcc;
-
-  --accent-primary: #ffe600;
-  --accent-primary-text: #000000;
-  --accent-action-start: #00ff66;
-  --accent-action-start-hover: #00cc52;
-  --accent-action-stop: #ff1744;
-  --accent-action-stop-hover: #d50000;
-
-  --accent-warning: #ffe600;
-  --accent-warning-bg: #222200;
-  --accent-info: #00e5ff;
-  --accent-info-bg: #002233;
-
-  --color-online: #00ff66;
-  --color-online-bg: #003311;
-  --color-offline: #ff334b;
-  --color-offline-bg: #330006;
-
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
+  --shadow-brutalist: 4px 4px 0px #0E0E0D;
+  --shadow-brutalist-lg: 8px 8px 0px #0E0E0D;
+  --shadow-brutalist-yellow: 6px 6px 0px #FFCE29;
 }
 
 /* Global Reset & Base */
@@ -103,25 +64,19 @@ body.theme-high-contrast {
 }
 
 html {
-  font-size: var(--font-size-base);
+  font-size: 16px;
   scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  font-family: var(--font-family-primary);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.5;
-  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Accessibility: High Visibility Focus Ring for Keyboard / Switch Navigation */
-:focus-visible {
-  outline: 3px solid var(--border-focus);
-  outline-offset: 3px;
+body {
+  background-color: var(--bg-canvas);
+  color: var(--text-dark);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Screen reader only utility */
@@ -134,14 +89,11 @@ body {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  border: 0;
+  border-width: 0;
 }
 
-/* Base button reset */
-button {
-  font-family: inherit;
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-size: 1rem;
+/* Accessible focus outline */
+:focus-visible {
+  outline: 3px solid var(--color-yellow);
+  outline-offset: 3px;
 }

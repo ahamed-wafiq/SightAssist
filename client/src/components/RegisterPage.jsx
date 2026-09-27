@@ -3,41 +3,28 @@ import { registerUser } from '../services/api';
 
 /**
  * RegisterPage Component
- * 
- * Provides a clean, accessible registration form that connects
- * the React frontend to the Express backend (POST /api/users/register).
- *
- * Handles:
- * - Successful registration
- * - Duplicate email error from MongoDB
- * - Missing fields validation
- * - Backend server unavailable (network error)
- * - Invalid server response format
+ * Bold Editorial / Brutalist Redesign:
+ * Heading: "CREATE YOUR ACCOUNT"
+ * Warm yellow container card with black borders, clean minimal inputs.
+ * Connects to Express + MongoDB (POST /api/users/register).
  */
 export default function RegisterPage({ onBackToAssist, onGoToLogin }) {
-  // Form input states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  // UI status states
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [registeredUser, setRegisteredUser] = useState(null);
 
-  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Reset feedback messages
     setErrorMessage('');
     setSuccessMessage('');
-    setRegisteredUser(null);
 
-    // 1. Client-side validation for missing fields
     if (!name.trim()) {
-      setErrorMessage('Please enter your name.');
+      setErrorMessage('Please enter your full name.');
       return;
     }
 
@@ -46,24 +33,21 @@ export default function RegisterPage({ onBackToAssist, onGoToLogin }) {
       return;
     }
 
-    // Basic email format check
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email.trim())) {
-      setErrorMessage('Please enter a valid email address (e.g., user@example.com).');
-      return;
-    }
-
     if (!password) {
-      setErrorMessage('Please enter a password.');
+      setErrorMessage('Please create a password.');
       return;
     }
 
     if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters long.');
+      setErrorMessage('Password must be at least 6 characters.');
       return;
     }
 
-    // 2. Submit to backend
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -74,187 +58,152 @@ export default function RegisterPage({ onBackToAssist, onGoToLogin }) {
       });
 
       if (result.success) {
-        // Successful registration
-        setSuccessMessage(result.message || 'User registered successfully!');
-        setRegisteredUser(result.user || { name: name.trim(), email: email.trim() });
-
-        // Clear sensitive fields - never store passwords
+        setSuccessMessage('Account created successfully! Redirecting to login...');
         setPassword('');
-        setName('');
-        setEmail('');
+        setConfirmPassword('');
+
+        if (onGoToLogin) {
+          setTimeout(() => {
+            onGoToLogin();
+          }, 1200);
+        }
       } else {
-        // Backend validation, duplicate email, backend unavailable, or invalid response
-        setErrorMessage(result.error || 'Registration failed. Please try again.');
+        setErrorMessage(result.error || 'Registration failed.');
       }
     } catch {
-      // General safety fallback
-      setErrorMessage(
-        'Unable to connect to the backend server. Please verify Express is running on http://localhost:5000.'
-      );
+      setErrorMessage('Backend is unavailable. Please verify server is running.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="page-container" role="main" aria-label="User Registration Page">
-      {/* Page Header */}
-      <div className="page-header">
-        <div>
-          <h2 className="page-title">User Registration</h2>
-          <p className="page-subtitle">Connect your account to the SightAssist backend</p>
+    <div className="editorial-auth-wrap" role="main" aria-label="User Registration">
+      <div className="editorial-auth-card">
+        {/* Top Tag & Back */}
+        <div className="auth-card-top">
+          <span className="auth-kicker">NEW MEMBERSHIP</span>
+          {onBackToAssist && (
+            <button
+              type="button"
+              className="btn-auth-back"
+              onClick={onBackToAssist}
+              aria-label="Back to assistant"
+            >
+              ← BACK
+            </button>
+          )}
         </div>
-        {onBackToAssist && (
-          <button
-            type="button"
-            className="btn-back-assist"
-            onClick={onBackToAssist}
-            aria-label="Back to camera assistant"
-          >
-            ← Back
-          </button>
-        )}
-      </div>
 
-      {/* Main Registration Card */}
-      <div className="register-card">
-        {/* Success Alert Banner */}
+        {/* Required Headline */}
+        <h1 className="auth-giant-title">CREATE YOUR ACCOUNT</h1>
+        <p className="auth-sub-desc">
+          Set up your personalized profile for hands-free vision alerts and synchronized emergency contacts.
+        </p>
+
+        {/* Alerts */}
         {successMessage && (
-          <div className="register-alert register-alert--success" role="alert" aria-live="polite">
-            <span className="register-alert-icon" aria-hidden="true">✅</span>
-            <div className="register-alert-content">
-              <strong>Registration Successful!</strong>
-              <p>{successMessage}</p>
-              {registeredUser && (
-                <div className="registered-user-summary">
-                  <p>Welcome, <strong>{registeredUser.name}</strong> ({registeredUser.email})</p>
-                </div>
-              )}
-            </div>
+          <div className="brutalist-alert brutalist-alert--notice" role="alert">
+            ✓ {successMessage}
           </div>
         )}
 
-        {/* Error Alert Banner */}
         {errorMessage && (
-          <div className="register-alert register-alert--error" role="alert" aria-live="assertive">
-            <span className="register-alert-icon" aria-hidden="true">⚠️</span>
-            <div className="register-alert-content">
-              <strong>Registration Error</strong>
-              <p>{errorMessage}</p>
-            </div>
+          <div className="brutalist-alert brutalist-alert--warning" role="alert">
+            ⚠️ {errorMessage}
           </div>
         )}
 
-        {/* Registration Form */}
-        <form className="register-form" onSubmit={handleSubmit} noValidate>
-          {/* Name Field */}
-          <div className="form-field">
-            <label htmlFor="reg-name" className="form-label">
-              Full Name <span className="field-required">*</span>
+        {/* Minimal Clean Form */}
+        <form onSubmit={handleSubmit} className="editorial-form" noValidate>
+          <div className="editorial-form-group">
+            <label htmlFor="reg-name" className="editorial-label">
+              FULL NAME
             </label>
             <input
               id="reg-name"
               type="text"
-              className="form-input"
-              placeholder="e.g. Jane Doe"
+              className="editorial-input"
+              placeholder="Alex Morgan"
               value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-                if (errorMessage) setErrorMessage('');
-              }}
-              autoComplete="name"
+              onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
+              autoComplete="name"
               required
             />
           </div>
 
-          {/* Email Field */}
-          <div className="form-field">
-            <label htmlFor="reg-email" className="form-label">
-              Email Address <span className="field-required">*</span>
+          <div className="editorial-form-group">
+            <label htmlFor="reg-email" className="editorial-label">
+              EMAIL ADDRESS
             </label>
             <input
               id="reg-email"
               type="email"
-              className="form-input"
-              placeholder="e.g. jane@example.com"
+              className="editorial-input"
+              placeholder="alex@example.com"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (errorMessage) setErrorMessage('');
-              }}
-              autoComplete="email"
+              onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              autoComplete="email"
               required
             />
           </div>
 
-          {/* Password Field */}
-          <div className="form-field">
-            <label htmlFor="reg-password" className="form-label">
-              Password <span className="field-required">*</span>
+          <div className="editorial-form-group">
+            <label htmlFor="reg-password" className="editorial-label">
+              PASSWORD (MIN 6 CHARACTERS)
             </label>
             <input
               id="reg-password"
               type="password"
-              className="form-input"
-              placeholder="At least 6 characters"
+              className="editorial-input"
+              placeholder="••••••••"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (errorMessage) setErrorMessage('');
-              }}
-              autoComplete="new-password"
+              onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              autoComplete="new-password"
               required
             />
-            <small className="field-hint">Must be at least 6 characters long.</small>
           </div>
 
-          {/* Submit Button */}
-          <div className="form-submit-row">
-            <button
-              id="btn-register-submit"
-              type="submit"
-              className={`btn-primary-action btn-register-submit ${isLoading ? 'btn-loading' : ''}`}
+          <div className="editorial-form-group">
+            <label htmlFor="reg-confirm-password" className="editorial-label">
+              CONFIRM PASSWORD
+            </label>
+            <input
+              id="reg-confirm-password"
+              type="password"
+              className="editorial-input"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="spinner-dot" aria-hidden="true" />
-                  <span>Registering...</span>
-                </>
-              ) : (
-                'Register'
-              )}
-            </button>
+              autoComplete="new-password"
+              required
+            />
           </div>
+
+          <button
+            type="submit"
+            id="btn-register-submit"
+            className="btn-brutalist btn-brutalist--black btn-brutalist--full"
+            disabled={isLoading}
+          >
+            {isLoading ? 'CREATING ACCOUNT...' : 'REGISTER NOW →'}
+          </button>
         </form>
 
         {/* Switch to Login */}
-        {onGoToLogin && (
-          <div className="auth-switch-box">
-            <span>Already have an account?</span>
-            <button
-              type="button"
-              className="btn-auth-switch"
-              onClick={onGoToLogin}
-            >
-              Sign In
-            </button>
-          </div>
-        )}
-
-        {/* Server & Architecture Info Note for Beginners */}
-        <div className="register-info-box">
-          <span className="info-icon" aria-hidden="true">💡</span>
-          <div className="info-content">
-            <strong>Backend Connection:</strong>
-            <p>
-              Submissions are sent directly to{' '}
-              <code>POST http://localhost:5000/api/users/register</code> and stored securely in MongoDB Atlas.
-            </p>
-          </div>
+        <div className="auth-card-footer">
+          <span>ALREADY HAVE AN ACCOUNT?</span>
+          <button
+            type="button"
+            className="btn-auth-switch"
+            onClick={onGoToLogin}
+          >
+            SIGN IN HERE
+          </button>
         </div>
       </div>
     </div>

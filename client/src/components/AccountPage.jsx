@@ -3,17 +3,8 @@ import { getCurrentUser } from '../services/api';
 
 /**
  * AccountPage Component
- * 
- * Displays authenticated user details fetched directly from
- * the protected GET /api/users/me endpoint.
- *
- * Shows:
- * - id
- * - name
- * - email
- * - voiceEnabled
- * - language
- * - Logout button
+ * Bold Editorial / Brutalist Redesign:
+ * Displays authenticated user profile from GET /api/users/me
  */
 export default function AccountPage({ currentUser, onLogout, onBackToAssist }) {
   const [profile, setProfile] = useState(currentUser || null);
@@ -37,103 +28,76 @@ export default function AccountPage({ currentUser, onLogout, onBackToAssist }) {
   }, []);
 
   return (
-    <div className="page-container" role="main" aria-label="User Account Profile">
-      <div className="page-header">
-        <div>
-          <h2 className="page-title">My Account</h2>
-          <p className="page-subtitle">Authenticated SightAssist Profile (Protected /api/users/me)</p>
+    <div className="editorial-auth-wrap" role="main" aria-label="User Account Profile">
+      <div className="editorial-auth-card">
+        {/* Top Tag & Back */}
+        <div className="auth-card-top">
+          <span className="auth-kicker">AUTHENTICATED PROFILE</span>
+          {onBackToAssist && (
+            <button
+              type="button"
+              className="btn-auth-back"
+              onClick={onBackToAssist}
+              aria-label="Back to assistant"
+            >
+              ← BACK
+            </button>
+          )}
         </div>
-        {onBackToAssist && (
-          <button
-            type="button"
-            className="btn-back-assist"
-            onClick={onBackToAssist}
-            aria-label="Back to camera assistant"
-          >
-            ← Back
-          </button>
-        )}
-      </div>
 
-      <div className="register-card">
+        <h1 className="auth-giant-title">USER ACCOUNT</h1>
+        <p className="auth-sub-desc">
+          Verified SightAssist credentials and accessibility preferences.
+        </p>
+
         {error && (
-          <div className="register-alert register-alert--error" role="alert">
-            <span className="register-alert-icon" aria-hidden="true">⚠️</span>
-            <div className="register-alert-content">
-              <strong>Error</strong>
-              <p>{error}</p>
-            </div>
+          <div className="brutalist-alert brutalist-alert--warning" role="alert">
+            ⚠️ {error}
           </div>
         )}
 
         {isLoading ? (
-          <div className="loading-state-box">
-            <span className="spinner-dot" aria-hidden="true" />
-            <p>Loading profile from protected endpoint...</p>
+          <div className="editorial-empty-card">
+            <p className="empty-editorial-title">LOADING PROFILE DATA...</p>
           </div>
         ) : profile ? (
-          <div className="profile-details-card">
-            <div className="profile-header-banner">
-              <span className="profile-avatar-icon" aria-hidden="true">👤</span>
+          <div className="profile-details-editorial">
+            <div className="profile-avatar-row">
+              <div className="profile-glyph-box">👤</div>
               <div>
-                <h3 className="profile-name">{profile.name}</h3>
-                <span className="profile-email">{profile.email}</span>
+                <h2 className="profile-name-title">{profile.name}</h2>
+                <span className="profile-email-badge">{profile.email}</span>
               </div>
             </div>
 
-            <div className="profile-info-grid">
-              <div className="profile-info-item">
-                <span className="info-item-label">User ID</span>
-                <code className="info-item-value">{profile.id}</code>
+            <div className="profile-fields-grid">
+              <div className="profile-field-block">
+                <span className="field-block-label">USER ID</span>
+                <span className="field-block-val">{profile.id || 'N/A'}</span>
               </div>
-
-              <div className="profile-info-item">
-                <span className="info-item-label">Full Name</span>
-                <span className="info-item-value">{profile.name}</span>
+              <div className="profile-field-block">
+                <span className="field-block-label">FULL NAME</span>
+                <span className="field-block-val">{profile.name}</span>
               </div>
-
-              <div className="profile-info-item">
-                <span className="info-item-label">Email Address</span>
-                <span className="info-item-value">{profile.email}</span>
+              <div className="profile-field-block">
+                <span className="field-block-label">EMAIL ADDRESS</span>
+                <span className="field-block-val">{profile.email}</span>
               </div>
-
-              <div className="profile-info-item">
-                <span className="info-item-label">Voice Guidance</span>
-                <span className="info-item-value">
-                  {profile.voiceEnabled ? '✅ Enabled' : '❌ Disabled'}
-                </span>
-              </div>
-
-              <div className="profile-info-item">
-                <span className="info-item-label">Language</span>
-                <span className="info-item-value">{profile.language || 'en'}</span>
+              <div className="profile-field-block">
+                <span className="field-block-label">STATUS</span>
+                <span className="field-block-val">ACTIVE MEMBER</span>
               </div>
             </div>
 
-            <div className="profile-actions-row">
-              <button
-                type="button"
-                id="btn-logout"
-                className="btn-logout-primary"
-                onClick={onLogout}
-              >
-                Log Out
-              </button>
-            </div>
+            <button
+              type="button"
+              className="btn-brutalist btn-brutalist--danger btn-brutalist--full"
+              onClick={onLogout}
+            >
+              SIGN OUT OF SIGHTASSIST
+            </button>
           </div>
-        ) : (
-          <p>No active session found. Please log in.</p>
-        )}
-
-        <div className="register-info-box">
-          <span className="info-icon" aria-hidden="true">🔒</span>
-          <div className="info-content">
-            <strong>Security Notice:</strong>
-            <p>
-              This profile data is loaded from the protected Express endpoint <code>GET /api/users/me</code> using your JWT Bearer token. Passwords and password hashes are never exposed.
-            </p>
-          </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

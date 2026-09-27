@@ -7,6 +7,14 @@ import {
 } from '../services/api';
 import speechService from '../utils/speech';
 
+/**
+ * EmergencyPage Component
+ * Bold Editorial / Brutalist Redesign:
+ * Uses required headings:
+ * "EMERGENCY"
+ * "GET HELP NOW"
+ * Highly visible emergency action without looking like a generic medical app.
+ */
 export default function EmergencyPage() {
   const [contacts, setContacts] = useState([]);
   const [sosStatus, setSosStatus] = useState(null);
@@ -20,19 +28,18 @@ export default function EmergencyPage() {
   });
   const [formError, setFormError] = useState('');
 
-  // Load contacts on mount
   useEffect(() => {
     loadContacts();
   }, []);
 
   const loadContacts = async () => {
     const list = await getEmergencyContacts();
-    setContacts(list);
+    setContacts(list || []);
   };
 
   const handleTriggerSOS = async () => {
     setIsTriggering(true);
-    speechService.speak('Emergency SOS triggered. Preparing alert broadcast.', true);
+    speechService.speak('Emergency alert broadcast initiated.', true);
 
     try {
       const sosResult = await triggerEmergencySOS({
@@ -41,14 +48,14 @@ export default function EmergencyPage() {
       });
       setSosStatus(sosResult);
       speechService.speak(
-        'Emergency SOS simulated broadcast complete. Saved contacts listed on screen.',
+        'Emergency broadcast sent to saved contacts.',
         true
       );
-    } catch (err) {
+    } catch {
       setSosStatus({
         status: 'SOS_SIMULATED',
         timestamp: new Date().toISOString(),
-        message: 'Emergency SOS alert initiated (simulated mode).',
+        message: 'Emergency SOS alert broadcast simulated to contacts.',
       });
     } finally {
       setIsTriggering(false);
@@ -68,8 +75,8 @@ export default function EmergencyPage() {
       setIsAddingContact(false);
       setFormError('');
       loadContacts();
-      speechService.speak('Emergency contact saved successfully.', true);
-    } catch (err) {
+      speechService.speak('Emergency contact saved.', true);
+    } catch {
       setFormError('Failed to save contact. Please try again.');
     }
   };
@@ -83,193 +90,166 @@ export default function EmergencyPage() {
   };
 
   return (
-    <div className="page-container" role="main" aria-label="Emergency SOS Page">
-      <div className="page-header">
-        <div>
-          <h2 className="page-title">Emergency / SOS</h2>
-          <p className="page-subtitle">One-tap emergency broadcast and contact management</p>
+    <div className="editorial-page-container" role="main" aria-label="Emergency SOS Page">
+      {/* Editorial Page Header */}
+      <div className="editorial-page-header">
+        <div className="page-header-text">
+          <span className="editorial-page-kicker">SAFETY PROTOCOL</span>
+          <h1 className="editorial-page-title">EMERGENCY</h1>
+          <p className="editorial-page-sub">
+            One-tap emergency broadcast system connecting you with family, guardians, and support networks.
+          </p>
         </div>
       </div>
 
-      {/* 1. Large Accessible SOS Button */}
-      <section className="sos-action-section" aria-label="Emergency Trigger">
-        <button
-          type="button"
-          id="btn-emergency-sos"
-          className={`btn-sos-large ${isTriggering ? 'btn-sos-large--triggering' : ''}`}
-          onClick={handleTriggerSOS}
-          aria-label="Send Emergency SOS Alert"
-        >
-          <span className="sos-icon" aria-hidden="true">🚨</span>
-          <div className="sos-text-group">
-            <span className="sos-title">TAP FOR EMERGENCY SOS</span>
-            <span className="sos-subtitle">Broadcast alert to all emergency contacts</span>
+      {/* Main Massive Editorial Emergency Trigger Card */}
+      <section className="editorial-emergency-hero" aria-label="Emergency Trigger">
+        <div className="emergency-hero-card">
+          <div className="emergency-card-kicker-row">
+            <span className="emergency-kicker-text">PRIORITY SOS BROADCAST</span>
+            <span className="emergency-live-indicator">● STANDBY</span>
           </div>
-        </button>
+
+          <div className="emergency-main-body">
+            <h2 className="emergency-display-title">EMERGENCY</h2>
+            <p className="emergency-display-desc">
+              Immediate geo-coordinated assistance broadcast to all verified emergency contacts.
+            </p>
+
+            <button
+              type="button"
+              id="btn-emergency-sos"
+              className={`btn-brutalist-sos ${isTriggering ? 'btn-brutalist-sos--triggering' : ''}`}
+              onClick={handleTriggerSOS}
+              aria-label="Get Help Now"
+            >
+              <span className="sos-alert-icon" aria-hidden="true">🚨</span>
+              <span className="sos-main-text">GET HELP NOW</span>
+              <span className="sos-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
       </section>
 
-      {/* 2. Emergency Status Display */}
+      {/* Emergency Status Notice */}
       {sosStatus && (
-        <section className="sos-status-card" role="alert" aria-live="assertive">
-          <div className="sos-status-header">
-            <span className="sos-status-dot" aria-hidden="true" />
-            <strong className="sos-status-title">EMERGENCY SOS ACTIVE (SIMULATION)</strong>
+        <section className="brutalist-alert brutalist-alert--danger" role="alert" aria-live="assertive">
+          <div className="alert-content-row">
+            <div>
+              <strong>🚨 EMERGENCY BROADCAST ACTIVE:</strong>
+              <p>{sosStatus.message || 'Alert broadcast sent to contacts.'}</p>
+            </div>
+            <button
+              type="button"
+              className="btn-brutalist btn-brutalist--sm"
+              onClick={() => setSosStatus(null)}
+            >
+              DISMISS
+            </button>
           </div>
-          <p className="sos-status-desc">{sosStatus.message}</p>
-          <div className="sos-status-meta">
-            <span>Timestamp: {new Date(sosStatus.timestamp).toLocaleTimeString()}</span>
-            <span>Notified: {sosStatus.contactsNotifiedCount || contacts.length} Contact(s)</span>
-          </div>
-          <button
-            type="button"
-            className="btn-dismiss-sos"
-            onClick={() => setSosStatus(null)}
-          >
-            Dismiss Alert
-          </button>
         </section>
       )}
 
-      {/* 3. Safety Notice (Development Mode) */}
-      <div className="safety-notice-box" role="note">
-        <span className="notice-icon" aria-hidden="true">ℹ️</span>
-        <p>
-          <strong>Safety Note:</strong> In development mode, automatic telephone calls and SMS dispatches are simulated. In production, this broadcasts your GPS coordinates and notifies your saved contacts immediately.
-        </p>
-      </div>
-
-      {/* 4. Emergency Contacts Management */}
-      <section className="contacts-section" aria-label="Emergency Contacts">
-        <div className="contacts-header-row">
-          <h3 className="section-title">Emergency Contacts ({contacts.length})</h3>
-          {!isAddingContact && (
-            <button
-              type="button"
-              className="btn-add-contact-toggle"
-              onClick={() => setIsAddingContact(true)}
-              aria-label="Add new emergency contact"
-            >
-              + Add Contact
-            </button>
-          )}
+      {/* Emergency Contacts Section */}
+      <section className="editorial-contacts-section">
+        <div className="contacts-section-header">
+          <div>
+            <h3 className="contacts-heading">EMERGENCY CONTACTS</h3>
+            <p className="contacts-sub">These contacts will be alerted first during an emergency broadcast.</p>
+          </div>
+          <button
+            type="button"
+            className="btn-brutalist btn-brutalist--sm btn-brutalist--yellow"
+            onClick={() => setIsAddingContact(!isAddingContact)}
+          >
+            {isAddingContact ? 'CANCEL' : '+ ADD CONTACT'}
+          </button>
         </div>
 
-        {/* Add Contact Form Modal/Inline */}
+        {/* Add Contact Modal / Inline Form */}
         {isAddingContact && (
-          <form className="add-contact-form" onSubmit={handleAddContactSubmit}>
-            <h4 className="form-title">New Emergency Contact</h4>
-            {formError && <p className="form-error-text">{formError}</p>}
+          <form onSubmit={handleAddContactSubmit} className="editorial-add-contact-form">
+            <h4 className="form-subheading">NEW EMERGENCY CONTACT</h4>
+            {formError && <div className="brutalist-alert brutalist-alert--warning">{formError}</div>}
 
-            <div className="form-field">
-              <label htmlFor="contact-name" className="form-label">Full Name *</label>
-              <input
-                id="contact-name"
-                type="text"
-                className="form-input"
-                placeholder="e.g. John Doe"
-                value={newContact.name}
-                onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
-                required
-              />
+            <div className="contact-form-grid">
+              <div className="editorial-form-group">
+                <label className="editorial-label">CONTACT NAME</label>
+                <input
+                  type="text"
+                  className="editorial-input"
+                  placeholder="e.g. Jane Doe"
+                  value={newContact.name}
+                  onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="editorial-form-group">
+                <label className="editorial-label">PHONE NUMBER</label>
+                <input
+                  type="tel"
+                  className="editorial-input"
+                  placeholder="+1 (555) 000-0000"
+                  value={newContact.phone}
+                  onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="editorial-form-group">
+                <label className="editorial-label">RELATIONSHIP</label>
+                <select
+                  className="editorial-input"
+                  value={newContact.relationship}
+                  onChange={(e) => setNewContact({ ...newContact, relationship: e.target.value })}
+                >
+                  <option value="Family">Family</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Doctor">Doctor / Caregiver</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
             </div>
 
-            <div className="form-field">
-              <label htmlFor="contact-phone" className="form-label">Phone Number *</label>
-              <input
-                id="contact-phone"
-                type="tel"
-                className="form-input"
-                placeholder="e.g. +1 (555) 123-4567"
-                value={newContact.phone}
-                onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="contact-relationship" className="form-label">Relationship</label>
-              <select
-                id="contact-relationship"
-                className="form-select"
-                value={newContact.relationship}
-                onChange={(e) => setNewContact({ ...newContact, relationship: e.target.value })}
-              >
-                <option value="Family">Family</option>
-                <option value="Caregiver">Caregiver</option>
-                <option value="Friend">Friend</option>
-                <option value="Doctor">Doctor / Medical</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div className="form-field-checkbox">
-              <input
-                id="contact-primary"
-                type="checkbox"
-                className="form-checkbox"
-                checked={newContact.isPrimary}
-                onChange={(e) => setNewContact({ ...newContact, isPrimary: e.target.checked })}
-              />
-              <label htmlFor="contact-primary" className="checkbox-label">
-                Set as Primary Contact
-              </label>
-            </div>
-
-            <div className="form-buttons-row">
-              <button type="submit" className="btn-form-save">
-                Save Contact
-              </button>
-              <button
-                type="button"
-                className="btn-form-cancel"
-                onClick={() => {
-                  setIsAddingContact(false);
-                  setFormError('');
-                }}
-              >
-                Cancel
-              </button>
-            </div>
+            <button type="submit" className="btn-brutalist btn-brutalist--black">
+              SAVE CONTACT →
+            </button>
           </form>
         )}
 
-        {/* Contacts List */}
-        {contacts.length === 0 ? (
-          <div className="empty-contacts-card">
-            <p className="empty-contacts-text">
-              No emergency contacts added yet. Tap <strong>"+ Add Contact"</strong> above to ensure you have a designated caregiver or family member listed.
-            </p>
-          </div>
-        ) : (
-          <div className="contacts-list">
-            {contacts.map((contact) => (
-              <div key={contact._id} className="contact-card">
-                <div className="contact-main-info">
-                  <div className="contact-name-row">
-                    <strong className="contact-name">{contact.name}</strong>
-                    {contact.isPrimary && (
-                      <span className="primary-contact-pill">Primary</span>
-                    )}
-                  </div>
-                  <span className="contact-phone">{contact.phone}</span>
-                  <span className="contact-rel">{contact.relationship}</span>
+        {/* Contact Cards Grid */}
+        <div className="contacts-cards-grid">
+          {contacts.length === 0 ? (
+            <div className="editorial-empty-card">
+              <p className="empty-editorial-title">NO SAVED CONTACTS YET</p>
+              <p className="empty-editorial-sub">
+                Add at least one family member or caregiver to enable one-touch safety alerts.
+              </p>
+            </div>
+          ) : (
+            contacts.map((c) => (
+              <div key={c._id || c.name} className="editorial-contact-card">
+                <div className="contact-card-top">
+                  <span className="contact-avatar-icon">👤</span>
+                  <span className="contact-relation-pill">{c.relationship || 'Contact'}</span>
                 </div>
-
-                <div className="contact-actions">
-                  <button
-                    type="button"
-                    className="btn-delete-contact"
-                    onClick={() => handleDelete(contact._id, contact.name)}
-                    aria-label={`Delete emergency contact ${contact.name}`}
-                    title="Delete contact"
-                  >
-                    🗑️
-                  </button>
+                <div className="contact-card-body">
+                  <h4 className="contact-name">{c.name}</h4>
+                  <p className="contact-phone">{c.phone}</p>
                 </div>
+                <button
+                  type="button"
+                  className="btn-contact-delete"
+                  onClick={() => handleDelete(c._id, c.name)}
+                  aria-label={`Delete ${c.name}`}
+                >
+                  DELETE
+                </button>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
       </section>
     </div>
   );

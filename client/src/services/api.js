@@ -3,7 +3,15 @@
  * Connects React frontend to Express + MongoDB backend
  */
 
-const API_BASE = 'http://localhost:5000/api';
+/**
+ * Backend URLs (Render Cloud Deployment & Local Dev Fallback)
+ */
+export const RENDER_BACKEND_URL = 'https://sightassist.onrender.com';
+export const API_BASE =
+  import.meta.env.VITE_BACKEND_URL ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : `${RENDER_BACKEND_URL}/api`);
 
 /**
  * Fetch User Settings from MongoDB

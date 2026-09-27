@@ -1,43 +1,37 @@
 /**
  * NavigationBar Component
- * Minimal, accessible, mobile-first navigation tabs:
- * - Assist (Camera + Live Voice Guidance)
- * - History (Detection Log)
- * - Emergency (SOS + Contacts)
- * - Settings (Accessibility Preferences)
+ * Fixed Mobile Bottom Navigation Bar:
+ * Strictly provides:
+ * Home | Assist | History | Settings
+ * Tactile, touch-friendly, high contrast brutalist design.
  */
-
-export default function NavigationBar({ activeTab, onSelectTab, currentUser }) {
+export default function NavigationBar({ activeTab, onSelectTab }) {
   const tabs = [
+    { id: 'home', label: 'Home', icon: '🏠', title: 'SightAssist Home' },
     { id: 'assist', label: 'Assist', icon: '👁️', title: 'Live Vision Assistant' },
     { id: 'history', label: 'History', icon: '📋', title: 'Detection History' },
-    { id: 'emergency', label: 'Emergency', icon: '🚨', title: 'Emergency SOS' },
     { id: 'settings', label: 'Settings', icon: '⚙️', title: 'Accessibility Settings' },
-    currentUser
-      ? { id: 'account', label: 'Account', icon: '👤', title: 'User Account' }
-      : { id: 'login', label: 'Login', icon: '🔑', title: 'Account Login' },
   ];
 
   return (
-    <nav className="bottom-nav-bar" role="navigation" aria-label="Main Navigation">
-      <div className="nav-tabs-grid">
+    <nav className="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
+      <div className="mobile-nav-inner">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
               type="button"
-              className={`nav-tab-btn ${isActive ? 'nav-tab-btn--active' : ''} ${
-                tab.id === 'emergency' ? 'nav-tab-btn--emergency' : ''
-              }`}
+              className={`mobile-nav-btn ${isActive ? 'mobile-nav-btn--active' : ''}`}
               onClick={() => onSelectTab(tab.id)}
               aria-current={isActive ? 'page' : undefined}
               aria-label={tab.title}
+              id={`mob-nav-${tab.id}`}
             >
-              <span className="nav-tab-icon" aria-hidden="true">
+              <span className="mob-nav-icon" aria-hidden="true">
                 {tab.icon}
               </span>
-              <span className="nav-tab-label">{tab.label}</span>
+              <span className="mob-nav-label">{tab.label}</span>
             </button>
           );
         })}

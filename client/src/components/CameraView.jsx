@@ -234,40 +234,34 @@ const CameraView = forwardRef(function CameraView(
         item.object === primaryDetection.object &&
         item.confidence === primaryDetection.confidence;
 
-      // Color coding by spatial position
-      const pos = (item.position || 'center').toLowerCase();
-      let color = '#FFE600'; // Center: safety yellow
-      if (pos === 'left') color = '#00E5FF'; // Left: vibrant cyan
-      if (pos === 'right') color = '#FF9100'; // Right: vibrant amber
+      // Color coding by spatial position (Warm Yellow, Vibrant Cyan, Coral)
+      const pos = (item.position || 'center').toUpperCase();
+      let color = '#FFCE29'; // Center: sunflower yellow
+      if (pos === 'LEFT') color = '#00F0FF'; // Left: vibrant cyan
+      if (pos === 'RIGHT') color = '#FF5252'; // Right: vibrant coral
 
-      // 1. Draw Bounding Box (Primary detection gets thicker, bolder stroke)
+      // 1. Draw Bounding Box (Thick brutalist stroke)
       ctx.strokeStyle = color;
       ctx.lineWidth = isPrimary ? 5 : 3;
       ctx.strokeRect(bx, by, bw, bh);
 
-      // Translucent box fill (Primary gets slightly more vibrant fill)
-      ctx.fillStyle = pos === 'left'
-        ? (isPrimary ? 'rgba(0, 229, 255, 0.16)' : 'rgba(0, 229, 255, 0.08)')
-        : pos === 'right'
-        ? (isPrimary ? 'rgba(255, 145, 0, 0.16)' : 'rgba(255, 145, 0, 0.08)')
-        : (isPrimary ? 'rgba(255, 230, 0, 0.16)' : 'rgba(255, 230, 0, 0.08)');
+      // Translucent box fill
+      ctx.fillStyle = pos === 'LEFT'
+        ? (isPrimary ? 'rgba(0, 240, 255, 0.18)' : 'rgba(0, 240, 255, 0.08)')
+        : pos === 'RIGHT'
+        ? (isPrimary ? 'rgba(255, 82, 82, 0.18)' : 'rgba(255, 82, 82, 0.08)')
+        : (isPrimary ? 'rgba(255, 206, 41, 0.18)' : 'rgba(255, 206, 41, 0.08)');
       ctx.fillRect(bx, by, bw, bh);
 
-      // 2. Prepare Label Content:
+      // 2. Prepare Label Content (Format: "PERSON — LEFT — 2.4m")
       const objName = (item.object || 'OBSTACLE').toUpperCase();
-      const confPct = `${Math.round((item.confidence || 0) * 100)}%`;
-      const distStr = item.approximate_distance != null
-        ? `~${item.approximate_distance}m`
-        : '';
+      const distStr = item.approximate_distance != null ? `${item.approximate_distance}m` : 'NEAR';
+      const labelText = `${objName} — ${pos} — ${distStr}`;
 
-      const labelLine1 = isPrimary ? `★ ${objName} ${confPct}` : `${objName} ${confPct}`;
-      const labelLine2 = distStr ? `${distStr} • ${(item.position || 'center').toUpperCase()}` : '';
-
-      ctx.font = 'bold 13px Inter, Outfit, sans-serif';
-      const textMetrics1 = ctx.measureText(labelLine1);
-      const textMetrics2 = distStr ? ctx.measureText(labelLine2) : { width: 0 };
-      const labelWidth = Math.max(textMetrics1.width, textMetrics2.width) + 16;
-      const labelHeight = distStr ? 38 : 22;
+      ctx.font = 'bold 13px "Space Grotesk", Outfit, sans-serif';
+      const textMetrics = ctx.measureText(labelText);
+      const labelWidth = textMetrics.width + 16;
+      const labelHeight = 26;
 
       // Place tag label above box, or just inside top if near top of frame
       let tagX = bx;
@@ -279,21 +273,16 @@ const CameraView = forwardRef(function CameraView(
         tagX = clientW - labelWidth - 4;
       }
 
-      // Draw high-contrast label badge
-      ctx.fillStyle = isPrimary ? 'rgba(0, 0, 0, 0.95)' : 'rgba(15, 23, 42, 0.90)';
+      // Draw high-contrast brutalist badge (Deep black background with colored border)
+      ctx.fillStyle = '#000000';
       ctx.fillRect(tagX, tagY, labelWidth, labelHeight);
       ctx.strokeStyle = color;
-      ctx.lineWidth = isPrimary ? 2.5 : 1.5;
+      ctx.lineWidth = 2.5;
       ctx.strokeRect(tagX, tagY, labelWidth, labelHeight);
 
-      // Draw Text
+      // Draw Bold Text
       ctx.fillStyle = '#FFFFFF';
-      ctx.fillText(labelLine1, tagX + 8, tagY + 15);
-
-      if (distStr) {
-        ctx.fillStyle = color;
-        ctx.fillText(labelLine2, tagX + 8, tagY + 31);
-      }
+      ctx.fillText(labelText, tagX + 8, tagY + 18);
     });
   }, [detections, isCameraActive, primaryDetection]);
 

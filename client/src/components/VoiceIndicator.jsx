@@ -1,7 +1,10 @@
 /**
  * VoiceIndicator Component
- * Polished accessibility card for voice guidance status:
- * Displays READY / LISTENING / SPEAKING / MUTED with tactile controls.
+ * Prominent Voice Assistant section in bold black/yellow editorial style:
+ * Title: "VOICE ASSISTANT"
+ * Status: "READY TO HELP" (or "SPEAKING" / "LISTENING" / "MUTED")
+ * Spoken message display (e.g. "Person ahead, slightly to your left.")
+ * Tactile repeat and mute controls.
  */
 export default function VoiceIndicator({
   isSpeaking,
@@ -17,62 +20,72 @@ export default function VoiceIndicator({
     ? 'SPEAKING'
     : isAssisting
     ? 'LISTENING'
-    : 'READY';
+    : 'READY TO HELP';
+
+  const defaultSampleQuote = isAssisting
+    ? 'Scanning surroundings...'
+    : 'Person ahead, slightly to your left.';
 
   return (
-    <section className="voice-container" aria-label="Voice Guidance Status">
-      <div className="voice-card">
-        {/* Top Status Row */}
-        <div className="voice-card-top">
-          <div className="voice-status-group">
-            <span className="voice-kicker">VOICE STATUS</span>
-            <div
-              className={`voice-status-pill voice-status-pill--${statusLabel.toLowerCase()}`}
-              role="status"
-              aria-live="polite"
-            >
-              <span className="voice-status-dot" aria-hidden="true" />
-              <span className="voice-status-text">{statusLabel}</span>
+    <section className="voice-assistant-section" aria-label="Voice Assistant Status">
+      <div className="voice-assistant-editorial-card">
+        {/* Top Header Row: Title & Status */}
+        <div className="voice-card-top-row">
+          <div className="voice-title-group">
+            <span className="voice-bubble-icon" aria-hidden="true">🎙️</span>
+            <div>
+              <h2 className="voice-main-title">VOICE ASSISTANT</h2>
+              <span className="voice-sub-kicker">REAL-TIME AUDIO GUIDANCE</span>
             </div>
           </div>
 
-          <div className="voice-quick-controls">
-            <button
-              type="button"
-              className="btn-voice-control"
-              onClick={onRepeatSpeech}
-              disabled={isMuted || !lastSpokenText}
-              aria-label="Repeat last spoken guidance"
-              title="Repeat last guidance"
+          <div className="voice-status-badge-wrap">
+            <div
+              className={`voice-status-pill voice-status-pill--${statusLabel.toLowerCase().replace(/\s+/g, '-')}`}
+              role="status"
+              aria-live="polite"
             >
-              <span aria-hidden="true">🔁</span> Repeat
-            </button>
-
-            <button
-              type="button"
-              id="btn-voice-mute"
-              className={`btn-voice-control ${isMuted ? 'btn-voice-control--muted' : ''}`}
-              onClick={onToggleMute}
-              aria-label={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
-              title={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
-            >
-              <span aria-hidden="true">{isMuted ? '🔇' : '🔊'}</span>
-              <span>{isMuted ? 'Unmute Voice' : 'Mute Voice'}</span>
-            </button>
+              <span className="voice-status-pulse-dot" aria-hidden="true" />
+              <span className="voice-status-text">{statusLabel}</span>
+            </div>
           </div>
         </div>
 
-        {/* Spoken Guidance Quote */}
-        <div className="voice-card-content">
-          <p className="voice-spoken-text">
+        {/* Spoken Message Banner */}
+        <div className="voice-message-display">
+          <span className="voice-message-label">CURRENT AUDIO FEEDBACK:</span>
+          <p className="voice-spoken-quote">
             {isMuted
-              ? 'Voice is muted. Tap "Sound On" to resume audio guidance.'
+              ? 'Voice guidance is muted. Tap "Unmute Voice" to resume audio feedback.'
               : lastSpokenText
               ? `"${lastSpokenText}"`
-              : isAssisting
-              ? 'Scanning surroundings...'
-              : 'Assistance is idle.'}
+              : `"${defaultSampleQuote}"`}
           </p>
+        </div>
+
+        {/* Quick Action Controls */}
+        <div className="voice-card-actions">
+          <button
+            type="button"
+            className="btn-brutalist-voice"
+            onClick={onRepeatSpeech}
+            disabled={isMuted || (!lastSpokenText && !isAssisting)}
+            aria-label="Repeat spoken message"
+          >
+            <span aria-hidden="true">🔁</span>
+            <span>REPEAT GUIDANCE</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-voice-mute"
+            className={`btn-brutalist-voice ${isMuted ? 'btn-brutalist-voice--muted' : ''}`}
+            onClick={onToggleMute}
+            aria-label={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
+          >
+            <span aria-hidden="true">{isMuted ? '🔇' : '🔊'}</span>
+            <span>{isMuted ? 'UNMUTE VOICE' : 'MUTE VOICE'}</span>
+          </button>
         </div>
       </div>
     </section>

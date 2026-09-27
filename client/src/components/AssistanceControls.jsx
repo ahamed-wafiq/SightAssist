@@ -1,8 +1,8 @@
 /**
  * AssistanceControls Component
- * Oversized, high-contrast main action button for mobile users:
- * - START ASSISTANCE (idle)
- * - STOP ASSISTANCE (active)
+ * Large brutalist action button matching reference aesthetic:
+ * - START DETECTION (idle)
+ * - STOP DETECTION (active)
  */
 export default function AssistanceControls({
   isAssisting,
@@ -13,18 +13,18 @@ export default function AssistanceControls({
       <button
         type="button"
         id="main-assistance-button"
-        className={`btn-main-action ${
-          isAssisting ? 'btn-main-action--stop' : 'btn-main-action--start'
+        className={`btn-brutalist-main ${
+          isAssisting ? 'btn-brutalist-main--stop' : 'btn-brutalist-main--start'
         }`}
         onClick={onToggleAssistance}
         aria-pressed={isAssisting}
-        aria-label={isAssisting ? 'Stop Assistance' : 'Start Assistance'}
+        aria-label={isAssisting ? 'Stop Detection' : 'Start Detection'}
       >
         <span className="btn-main-icon" aria-hidden="true">
           {isAssisting ? '⏹' : '▶'}
         </span>
         <span className="btn-main-label">
-          {isAssisting ? 'STOP ASSISTANCE' : 'START ASSISTANCE'}
+          {isAssisting ? 'STOP DETECTION' : 'START DETECTION'}
         </span>
       </button>
     </section>

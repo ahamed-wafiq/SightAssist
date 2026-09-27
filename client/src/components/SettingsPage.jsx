@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import speechService from '../utils/speech';
 
+/**
+ * SettingsPage Component
+ * Editorial Brutalist Redesign:
+ * Keep settings simple:
+ * - Voice Assistant ON/OFF
+ * - Language
+ * - Voice Speed
+ * - Vibration Alerts
+ * - Emergency Contacts
+ */
 export default function SettingsPage({
   settings,
   onUpdateSettings,
@@ -15,7 +25,7 @@ export default function SettingsPage({
 
     if (key === 'voiceAlertsEnabled') {
       speechService.speak(
-        updated.voiceAlertsEnabled ? 'Voice alerts enabled.' : 'Voice alerts disabled.',
+        updated.voiceAlertsEnabled ? 'Voice assistant enabled.' : 'Voice assistant disabled.',
         true
       );
     } else if (key === 'vibrationEnabled') {
@@ -32,217 +42,174 @@ export default function SettingsPage({
 
     if (key === 'speechRate') {
       speechService.setRate(value);
-      speechService.speak(`Speech speed ${value} times.`, true);
-    } else if (key === 'displayMode') {
-      speechService.speak(`Display mode set to ${value}.`, true);
-    } else if (key === 'preferredCamera') {
-      speechService.speak(
-        `Preferred camera set to ${value === 'environment' ? 'back camera' : 'front camera'}.`,
-        true
-      );
+      speechService.speak(`Voice speed ${value} times.`, true);
+    } else if (key === 'language') {
+      speechService.speak(`Language set to ${value}.`, true);
     }
   };
 
   const showSavedNote = () => {
-    setSaveStatus('Preferences saved to MongoDB.');
+    setSaveStatus('Preferences saved successfully.');
     setTimeout(() => setSaveStatus(''), 3000);
   };
 
   return (
-    <div className="page-container" role="main" aria-label="Accessibility Settings Page">
-      <div className="page-header">
-        <div>
-          <h2 className="page-title">Accessibility Settings</h2>
-          <p className="page-subtitle">Configure voice, camera, and tactile feedback</p>
+    <div className="editorial-page-container" role="main" aria-label="Settings Page">
+      {/* Editorial Page Header */}
+      <div className="editorial-page-header">
+        <div className="page-header-text">
+          <span className="editorial-page-kicker">PREFERENCES & ACCESSIBILITY</span>
+          <h1 className="editorial-page-title">SYSTEM SETTINGS</h1>
+          <p className="editorial-page-sub">
+            Customize voice parameters, feedback thresholds, and emergency routing.
+          </p>
         </div>
       </div>
 
       {saveStatus && (
-        <div className="status-notice-banner" role="status">
+        <div className="brutalist-alert brutalist-alert--notice" role="status">
           ✓ {saveStatus}
         </div>
       )}
 
-      <div className="settings-cards-stack">
-        {/* 1. Voice Alerts Master Toggle */}
-        <div className="setting-card">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Voice Alerts</h3>
-            <p className="setting-desc">Enable spoken audio descriptions of detected obstacles</p>
+      {/* Settings Grid / Stack */}
+      <div className="editorial-settings-stack">
+        {/* 1. Voice Assistant ON/OFF */}
+        <div className="editorial-setting-card">
+          <div className="set-card-content">
+            <span className="set-card-number">01</span>
+            <div>
+              <h2 className="set-card-title">VOICE ASSISTANT</h2>
+              <p className="set-card-desc">
+                Enable spoken audio guidance and distance announcements for detected obstacles.
+              </p>
+            </div>
           </div>
           <button
             type="button"
-            className={`btn-toggle-switch ${settings.voiceAlertsEnabled ? 'btn-toggle-switch--on' : ''}`}
+            className={`btn-toggle-brutalist ${
+              settings.voiceAlertsEnabled ? 'btn-toggle-brutalist--active' : ''
+            }`}
             onClick={() => handleToggle('voiceAlertsEnabled')}
             role="switch"
             aria-checked={settings.voiceAlertsEnabled}
-            aria-label="Toggle voice alerts"
+            aria-label="Toggle voice assistant"
           >
-            <span className="switch-thumb" />
-            <span className="switch-text">{settings.voiceAlertsEnabled ? 'ON' : 'OFF'}</span>
+            <span className="toggle-brutalist-thumb" />
+            <span className="toggle-brutalist-text">
+              {settings.voiceAlertsEnabled ? 'ON' : 'OFF'}
+            </span>
           </button>
         </div>
 
-        {/* 2. Voice Speed */}
-        <div className="setting-card setting-card--stacked">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Voice Speed</h3>
-            <p className="setting-desc">Adjust speech announcement rate</p>
+        {/* 2. Language Selector */}
+        <div className="editorial-setting-card editorial-setting-card--col">
+          <div className="set-card-content">
+            <span className="set-card-number">02</span>
+            <div>
+              <h2 className="set-card-title">LANGUAGE</h2>
+              <p className="set-card-desc">Select spoken guidance synthesis language.</p>
+            </div>
           </div>
-          <div className="setting-button-row">
-            {[0.8, 1.0, 1.2, 1.5].map((rate) => (
-              <button
-                key={rate}
-                type="button"
-                className={`btn-pill-option ${settings.speechRate === rate ? 'btn-pill-option--active' : ''}`}
-                onClick={() => handleSelect('speechRate', rate)}
-              >
-                {rate}x {rate === 1.0 ? '(Normal)' : ''}
-              </button>
-            ))}
+          <div className="set-options-row">
+            {[
+              { code: 'en', label: 'English (US)' },
+              { code: 'es', label: 'Spanish' },
+              { code: 'fr', label: 'French' },
+              { code: 'de', label: 'German' },
+              { code: 'ja', label: 'Japanese' },
+            ].map((lang) => {
+              const active = (settings.language || 'en') === lang.code;
+              return (
+                <button
+                  key={lang.code}
+                  type="button"
+                  className={`btn-pill-choice ${active ? 'btn-pill-choice--active' : ''}`}
+                  onClick={() => handleSelect('language', lang.code)}
+                >
+                  {lang.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* 3. Speak Distance */}
-        <div className="setting-card">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Speak Distance</h3>
-            <p className="setting-desc">Include approximate distance (e.g. "~2.1 meters")</p>
+        {/* 3. Voice Speed */}
+        <div className="editorial-setting-card editorial-setting-card--col">
+          <div className="set-card-content">
+            <span className="set-card-number">03</span>
+            <div>
+              <h2 className="set-card-title">VOICE SPEED</h2>
+              <p className="set-card-desc">Adjust spoken alert delivery tempo.</p>
+            </div>
+          </div>
+          <div className="set-options-row">
+            {[0.8, 1.0, 1.2, 1.5].map((rate) => {
+              const active = (settings.speechRate || 1.0) === rate;
+              return (
+                <button
+                  key={rate}
+                  type="button"
+                  className={`btn-pill-choice ${active ? 'btn-pill-choice--active' : ''}`}
+                  onClick={() => handleSelect('speechRate', rate)}
+                >
+                  {rate}x {rate === 1.0 ? '(Normal)' : ''}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 4. Vibration Alerts */}
+        <div className="editorial-setting-card">
+          <div className="set-card-content">
+            <span className="set-card-number">04</span>
+            <div>
+              <h2 className="set-card-title">VIBRATION ALERTS</h2>
+              <p className="set-card-desc">
+                Haptic vibration pulses on mobile devices when critical obstacles approach within 1.5 meters.
+              </p>
+            </div>
           </div>
           <button
             type="button"
-            className={`btn-toggle-switch ${settings.speakDistance ? 'btn-toggle-switch--on' : ''}`}
-            onClick={() => handleToggle('speakDistance')}
-            role="switch"
-            aria-checked={settings.speakDistance}
-            aria-label="Toggle speak distance"
-          >
-            <span className="switch-thumb" />
-            <span className="switch-text">{settings.speakDistance ? 'ON' : 'OFF'}</span>
-          </button>
-        </div>
-
-        {/* 4. Speak Direction */}
-        <div className="setting-card">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Speak Direction</h3>
-            <p className="setting-desc">Include spatial location (ahead, on your left, on your right)</p>
-          </div>
-          <button
-            type="button"
-            className={`btn-toggle-switch ${settings.speakDirection ? 'btn-toggle-switch--on' : ''}`}
-            onClick={() => handleToggle('speakDirection')}
-            role="switch"
-            aria-checked={settings.speakDirection}
-            aria-label="Toggle speak direction"
-          >
-            <span className="switch-thumb" />
-            <span className="switch-text">{settings.speakDirection ? 'ON' : 'OFF'}</span>
-          </button>
-        </div>
-
-        {/* 5. Detection Confidence Threshold */}
-        <div className="setting-card setting-card--stacked">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Detection Sensitivity</h3>
-            <p className="setting-desc">Minimum AI confidence filter for reporting obstacles</p>
-          </div>
-          <div className="setting-button-row">
-            {[0.35, 0.50, 0.65].map((th) => (
-              <button
-                key={th}
-                type="button"
-                className={`btn-pill-option ${settings.confidenceThreshold === th ? 'btn-pill-option--active' : ''}`}
-                onClick={() => handleSelect('confidenceThreshold', th)}
-              >
-                {Math.round(th * 100)}% {th === 0.50 ? '(Default)' : ''}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 6. Vibration Alerts */}
-        <div className="setting-card">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Vibration Alerts</h3>
-            <p className="setting-desc">Haptic vibration pulses on mobile devices when objects are close</p>
-          </div>
-          <button
-            type="button"
-            className={`btn-toggle-switch ${settings.vibrationEnabled ? 'btn-toggle-switch--on' : ''}`}
+            className={`btn-toggle-brutalist ${
+              settings.vibrationEnabled ? 'btn-toggle-brutalist--active' : ''
+            }`}
             onClick={() => handleToggle('vibrationEnabled')}
             role="switch"
             aria-checked={settings.vibrationEnabled}
-            aria-label="Toggle vibration alerts"
+            aria-label="Toggle vibration feedback"
           >
-            <span className="switch-thumb" />
-            <span className="switch-text">{settings.vibrationEnabled ? 'ON' : 'OFF'}</span>
+            <span className="toggle-brutalist-thumb" />
+            <span className="toggle-brutalist-text">
+              {settings.vibrationEnabled ? 'ON' : 'OFF'}
+            </span>
           </button>
         </div>
 
-        {/* 7. Camera Selection: Front / Back */}
-        <div className="setting-card setting-card--stacked">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Camera Selection</h3>
-            <p className="setting-desc">Default camera lens used for real-time assistance</p>
+        {/* 5. Emergency Contacts Information */}
+        <div className="editorial-setting-card">
+          <div className="set-card-content">
+            <span className="set-card-number">05</span>
+            <div>
+              <h2 className="set-card-title">EMERGENCY CONTACTS</h2>
+              <p className="set-card-desc">
+                Designate primary guardians or emergency services to receive instant SOS coordinates.
+              </p>
+            </div>
           </div>
-          <div className="setting-button-row">
-            <button
-              type="button"
-              className={`btn-pill-option ${settings.preferredCamera === 'environment' ? 'btn-pill-option--active' : ''}`}
-              onClick={() => handleSelect('preferredCamera', 'environment')}
-            >
-              📷 Back (Rear) Camera
-            </button>
-            <button
-              type="button"
-              className={`btn-pill-option ${settings.preferredCamera === 'user' ? 'btn-pill-option--active' : ''}`}
-              onClick={() => handleSelect('preferredCamera', 'user')}
-            >
-              🤳 Front (Selfie) Camera
-            </button>
-          </div>
+          <button
+            type="button"
+            className="btn-brutalist btn-brutalist--yellow btn-brutalist--sm"
+            onClick={() => {
+              window.location.hash = '#emergency';
+              if (onBackToAssist) onBackToAssist();
+            }}
+          >
+            MANAGE SOS
+          </button>
         </div>
-
-        {/* 8. Display Mode: Clean Light / High Contrast */}
-        <div className="setting-card setting-card--stacked">
-          <div className="setting-card-text">
-            <h3 className="setting-title">Display Contrast</h3>
-            <p className="setting-desc">Visual contrast theme for low vision and varied lighting</p>
-          </div>
-          <div className="setting-button-row">
-            <button
-              type="button"
-              className={`btn-pill-option ${settings.displayMode === 'light' ? 'btn-pill-option--active' : ''}`}
-              onClick={() => handleSelect('displayMode', 'light')}
-            >
-              ☀️ Clean Light
-            </button>
-            <button
-              type="button"
-              className={`btn-pill-option ${settings.displayMode === 'high-contrast' ? 'btn-pill-option--active' : ''}`}
-              onClick={() => handleSelect('displayMode', 'high-contrast')}
-            >
-              🌙 High Contrast
-            </button>
-          </div>
-        </div>
-
-        {/* Disclaimer Card */}
-        <div className="safety-notice-box">
-          <span className="notice-icon" aria-hidden="true">ℹ️</span>
-          <p>
-            Settings are automatically synced with MongoDB and saved for future sessions.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          className="btn-primary-action btn-return-assist"
-          onClick={onBackToAssist}
-        >
-          Return to Live Assistant
-        </button>
       </div>
     </div>
   );
