@@ -112,9 +112,9 @@
 .brutalist-header {
   background-color: #FFFFFF;
   border: 3px solid #000000;
-  border-radius: 28px;
-  padding: 12px 24px;
-  margin-bottom: 24px;
+  border-radius: 24px;
+  padding: 8px clamp(12px, 1.4vw, 20px);
+  margin-bottom: 20px;
   box-shadow: 4px 4px 0px #000000;
   width: 100%;
   max-width: 100%;
@@ -125,7 +125,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: clamp(6px, 1vw, 14px);
   width: 100%;
   box-sizing: border-box;
 }
@@ -134,17 +134,17 @@
 .header-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(6px, 0.8vw, 10px);
   cursor: pointer;
   user-select: none;
   flex-shrink: 0;
 }
 
 .brand-badge-pill {
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   background-color: var(--color-yellow);
-  border: 2.5px solid #000000;
+  border: 2px solid #000000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -154,7 +154,7 @@
 }
 
 .brand-eye-icon {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
 }
 
 .brand-text-block {
@@ -164,7 +164,7 @@
 
 .brand-name {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: clamp(1.4rem, 1.6vw, 1.7rem);
   line-height: 1;
   color: #000000;
   letter-spacing: 0.5px;
@@ -172,9 +172,9 @@
 
 .brand-sub {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  letter-spacing: 1.2px;
+  letter-spacing: 1px;
   color: #555550;
   text-transform: uppercase;
 }
@@ -183,10 +183,11 @@
 .desktop-nav-menu {
   display: none;
   align-items: center;
-  gap: 8px;
+  gap: clamp(4px, 0.6vw, 8px);
+  flex-shrink: 1;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 820px) {
   .desktop-nav-menu {
     display: flex;
   }
@@ -196,14 +197,28 @@
   background: transparent;
   border: 2px solid transparent;
   border-radius: var(--radius-pill);
-  padding: 8px 18px;
+  padding: 6px clamp(8px, 0.9vw, 14px);
   font-family: var(--font-accent);
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: clamp(0.78rem, 0.85vw, 0.88rem);
+  font-weight: 750;
   color: #000000;
   cursor: pointer;
   transition: all 0.15s ease;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.desktop-history-short {
+  display: none;
+}
+
+@media (max-width: 1100px) and (min-width: 820px) {
+  .desktop-history-full {
+    display: none;
+  }
+  .desktop-history-short {
+    display: inline;
+  }
 }
 
 .desktop-nav-link:hover {
@@ -222,31 +237,33 @@
 .btn-nav-emergency {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: var(--tint-coral);
   color: #FFFFFF;
   border: 2px solid #000000;
   border-radius: var(--radius-pill);
-  padding: 8px 18px;
+  padding: 6px clamp(10px, 1vw, 16px);
   font-family: var(--font-accent);
-  font-size: 0.88rem;
+  font-size: clamp(0.78rem, 0.85vw, 0.88rem);
   font-weight: 800;
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: 2px 2px 0px #000000;
   transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-nav-emergency:hover,
 .btn-nav-emergency--active {
   transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #000000;
+  box-shadow: 3px 3px 0px #000000;
   background-color: #E63920;
 }
 
 .emergency-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background-color: #FFFFFF;
   border-radius: 50%;
   animation: pulse-dot 1.4s infinite;
@@ -256,20 +273,20 @@
 .header-right-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(6px, 0.8vw, 10px);
   flex-shrink: 0;
 }
 
 .header-status-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  gap: 5px;
+  padding: 5px clamp(8px, 0.8vw, 12px);
   border: 2px solid #000000;
   border-radius: var(--radius-pill);
   font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 750;
   letter-spacing: 0.5px;
   background-color: #F5F5F0;
   white-space: nowrap;
@@ -284,26 +301,19 @@
 }
 
 .status-indicator-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
-.header-user-actions-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-header-avatar,
 .btn-header-login-quick {
   background: var(--color-yellow);
   border: 2px solid #000000;
   border-radius: var(--radius-pill);
-  padding: 6px 14px;
+  padding: 5px clamp(10px, 1vw, 14px);
   font-family: var(--font-accent);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 2px 2px 0px #000000;

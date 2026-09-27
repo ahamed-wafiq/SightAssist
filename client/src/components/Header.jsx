@@ -59,7 +59,8 @@ export default function Header({
             onClick={() => onSelectTab('history')}
             id="nav-link-history"
           >
-            Detection History
+            <span className="desktop-history-full">Detection History</span>
+            <span className="desktop-history-short">History</span>
           </button>
 
           <button
@@ -72,25 +73,19 @@ export default function Header({
           </button>
 
           {/* Profile / Account or Login */}
-          {currentUser ? (
-            <button
-              type="button"
-              className={`desktop-nav-link ${activeTab === 'account' ? 'desktop-nav-link--active' : ''}`}
-              onClick={() => onSelectTab('account')}
-              id="nav-link-profile"
-            >
-              Profile ({currentUser.name.split(' ')[0]})
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={`desktop-nav-link ${activeTab === 'login' || activeTab === 'register' ? 'desktop-nav-link--active' : ''}`}
-              onClick={() => onSelectTab('login')}
-              id="nav-link-login"
-            >
-              Profile
-            </button>
-          )}
+          <button
+            type="button"
+            className={`desktop-nav-link ${
+              activeTab === 'account' || activeTab === 'login' || activeTab === 'register'
+                ? 'desktop-nav-link--active'
+                : ''
+            }`}
+            onClick={() => onSelectTab(currentUser ? 'account' : 'login')}
+            id="nav-link-profile"
+            title={currentUser ? `Account: ${currentUser.name}` : 'Sign In'}
+          >
+            Profile
+          </button>
 
           {/* Desktop Emergency CTA */}
           <button
@@ -117,30 +112,17 @@ export default function Header({
             <span className="status-text">{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
           </div>
 
-          {/* Profile Icon & Logout Button */}
+          {/* Quick Logout or Sign In */}
           {currentUser ? (
-            <div className="header-user-actions-group">
-              <button
-                type="button"
-                className="btn-header-avatar"
-                onClick={() => onSelectTab('account')}
-                title={`Logged in as ${currentUser.name}`}
-                aria-label="Open User Profile"
-              >
-                👤
-              </button>
-              {onLogout && (
-                <button
-                  type="button"
-                  className="btn-header-login-quick"
-                  onClick={onLogout}
-                  title="Sign out of account"
-                  aria-label="Sign Out"
-                >
-                  LOGOUT
-                </button>
-              )}
-            </div>
+            <button
+              type="button"
+              className="btn-header-login-quick"
+              onClick={onLogout}
+              title="Sign out of account"
+              aria-label="Sign Out"
+            >
+              LOGOUT
+            </button>
           ) : (
             <button
               type="button"
