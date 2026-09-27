@@ -462,7 +462,7 @@
   z-index: 1000;
   background-color: #FFFFFF;
   border-top: 3px solid #000000;
-  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)) 12px;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px)) 8px;
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -479,7 +479,7 @@
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
-  gap: 6px;
+  gap: 4px;
 }
 
 .mobile-nav-btn {
@@ -489,14 +489,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 6px 4px;
+  gap: 2px;
+  padding: 6px 2px;
   background: transparent;
   border: 2px solid transparent;
-  border-radius: 14px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
-  min-height: 50px;
+  min-height: 48px;
+  box-sizing: border-box;
 }
 
 .mobile-nav-btn--active {
@@ -506,17 +507,23 @@
 }
 
 .mob-nav-icon {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   line-height: 1;
 }
 
 .mob-nav-label {
-  font-family: var(--font-accent);
-  font-size: 0.72rem;
+  font-family: var(--font-body);
+  font-size: clamp(0.58rem, 2.1vw, 0.68rem);
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.3px;
   color: #000000;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+  line-height: 1.1;
 }
 
 /* --------------------------------------------------------------------------
@@ -1665,8 +1672,8 @@
 /* Direction Indicator Strip */
 .direction-indicator-strip {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
   background-color: #141412;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius-pill);
@@ -1679,14 +1686,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 8px;
+  gap: 3px;
+  padding: 7px 4px;
   font-family: var(--font-accent);
-  font-size: 0.8rem;
+  font-size: clamp(0.66rem, 2vw, 0.78rem);
   font-weight: 800;
   color: #888880;
   border-radius: var(--radius-pill);
   transition: all 0.2s ease;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .direction-indicator-strip {
+    gap: 3px;
+    padding: 3px;
+  }
+  .dir-strip-segment {
+    padding: 6px 2px;
+    font-size: 0.68rem;
+    gap: 2px;
+  }
 }
 
 .dir-strip-segment--active { color: #000000; }
@@ -2196,9 +2217,15 @@
   box-sizing: border-box;
 }
 
+.vc-left {
+  display: flex;
+  align-items: center;
+}
+
 .btn-vc-mic {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   background: var(--color-yellow);
   border: 2px solid #000000;
@@ -2209,16 +2236,50 @@
   font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .btn-vc-mic--listening {
   background-color: #00F0FF;
 }
 
+.vc-right {
+  display: flex;
+  align-items: center;
+}
+
 .vc-hint-text {
   font-family: var(--font-body);
   font-size: 0.82rem;
   color: #444440;
+}
+
+@media (max-width: 600px) {
+  .voice-commands-strip {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+  .vc-left {
+    width: 100%;
+  }
+  .btn-vc-mic {
+    width: 100%;
+    font-size: 0.76rem;
+    padding: 8px 12px;
+    white-space: normal;
+    text-align: center;
+  }
+  .vc-right {
+    width: 100%;
+    justify-content: center;
+  }
+  .vc-hint-text {
+    font-size: 0.75rem;
+    text-align: center;
+  }
 }
 
 .vc-heard-pill {
@@ -2551,10 +2612,16 @@
   align-items: flex-start;
 }
 
+.editorial-setting-card--action {
+  flex-direction: row;
+}
+
 .set-card-content {
   display: flex;
   align-items: flex-start;
   gap: 14px;
+  flex: 1;
+  min-width: 0;
 }
 
 .set-card-number {
@@ -2563,6 +2630,7 @@
   line-height: 1;
   color: var(--color-yellow);
   -webkit-text-stroke: 1px #000000;
+  flex-shrink: 0;
 }
 
 .set-card-title {
@@ -2578,6 +2646,36 @@
   font-size: 0.88rem;
   color: #555550;
   max-width: 500px;
+}
+
+@media (max-width: 680px) {
+  .editorial-setting-card {
+    padding: 16px;
+    gap: 12px;
+    border-radius: 20px;
+  }
+  .editorial-setting-card--action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .editorial-setting-card--action .btn-brutalist {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .set-card-content {
+    gap: 10px;
+  }
+  .set-card-number {
+    font-size: 1.5rem;
+  }
+  .set-card-title {
+    font-size: 1.35rem;
+  }
+  .set-card-desc {
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
 }
 
 .btn-toggle-brutalist {

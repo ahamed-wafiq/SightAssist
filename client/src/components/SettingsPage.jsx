@@ -189,7 +189,7 @@ export default function SettingsPage({
         </div>
 
         {/* 5. Emergency Contacts Information */}
-        <div className="editorial-setting-card">
+        <div className="editorial-setting-card editorial-setting-card--action">
           <div className="set-card-content">
             <span className="set-card-number">05</span>
             <div>
