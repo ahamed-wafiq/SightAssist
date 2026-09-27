@@ -164,7 +164,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Poll Python ML Service (/health on port 5001)
+  // Poll Python FastAPI ML Service (/health)
   useEffect(() => {
     const checkML = async () => {
       const status = await checkMLServiceHealth();
@@ -178,7 +178,7 @@ function App() {
 
   /**
    * Continuous Detection Loop Step
-   * Captures in-memory camera frame via hidden canvas, sends to FastAPI YOLO at http://127.0.0.1:8000/detect,
+   * Captures in-memory camera frame via hidden canvas, sends to FastAPI YOLO microservice,
    * extracts detections (object, confidence, position, approximate distance), and updates React state.
    * Frame rate: 1 frame every 1 second (1000ms).
    */
@@ -204,7 +204,7 @@ function App() {
 
       if (!isCameraActiveRef.current && !isAssistingRef.current) return;
 
-      // 2. Dispatch to FastAPI POST http://127.0.0.1:8000/detect
+      // 2. Dispatch to FastAPI POST /detect via mlService
       const result = await predictFrame(frameBlob);
 
       if (!isCameraActiveRef.current && !isAssistingRef.current) return;
@@ -240,7 +240,7 @@ function App() {
         message.includes('Failed to fetch') ||
         message.includes('NetworkError')
       ) {
-        setDetectionError('FastAPI ML service is unavailable at http://127.0.0.1:8000/detect. Ensure "python main.py" is running.');
+        setDetectionError('FastAPI ML service is unavailable. Please check the ML service status.');
       } else {
         setDetectionError(message);
       }

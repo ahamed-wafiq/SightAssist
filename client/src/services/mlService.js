@@ -1,19 +1,25 @@
 /**
  * ML Service API Client
  * Communicates directly with the FastAPI Python inference microservice
- * running at http://localhost:5001.
+ * running on Render or local environment.
  */
 
-const ML_API_BASE = 'http://127.0.0.1:8000';
+export const RENDER_ML_API_URL = 'https://sightassist-ml.onrender.com';
+
+export const ML_API_BASE = (
+  import.meta.env.VITE_ML_API_URL ||
+  RENDER_ML_API_URL
+).replace(/\/+$/, '');
 
 /**
  * Checks if the Python ML microservice is online and accessible
- * @returns {Promise<{ online: boolean, details?: any }>}
+ * GET ${VITE_ML_API_URL}/health
+ * @returns {Promise<{ online: boolean, details?: any, error?: string }>}
  */
 export async function checkMLServiceHealth() {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
 
     const response = await fetch(`${ML_API_BASE}/health`, {
       signal: controller.signal,
@@ -26,24 +32,18 @@ export async function checkMLServiceHealth() {
     }
     return { online: false, error: `Service responded with status ${response.status}` };
   } catch (err) {
-    // Attempt fallback to 5001 if 8000 fails
-    try {
-      const fbRes = await fetch('http://127.0.0.1:5001/health');
-      if (fbRes.ok) {
-        return { online: true, details: await fbRes.json() };
-      }
-    } catch (_) {}
     return {
       online: false,
-      error: 'Python ML service is not reachable on http://127.0.0.1:8000.',
+      error: `Python ML service is not reachable at ${ML_API_BASE}/health.`,
     };
   }
 }
 
 /**
- * Sends a captured camera frame blob to the Python YOLO /predict endpoint
+ * Sends a captured camera frame blob to the Python YOLO /detect endpoint
+ * POST ${VITE_ML_API_URL}/detect
  * @param {Blob} imageBlob - JPEG image blob captured from the camera video
- * @returns {Promise<{ detections: Array<{ object: string, confidence: number, position: string }> }>}
+ * @returns {Promise<{ detections: Array<{ object: string, confidence: number, position: string, distance?: string, approximate_distance?: number, bbox?: number[] }> }>}
  */
 export async function predictFrame(imageBlob) {
   if (!imageBlob || !(imageBlob instanceof Blob)) {
@@ -67,16 +67,9 @@ export async function predictFrame(imageBlob) {
       });
     }
   } catch (networkErr) {
-    try {
-      response = await fetch('http://127.0.0.1:5001/detect', {
-        method: 'POST',
-        body: formData,
-      });
-    } catch (_) {
-      throw new Error(
-        'Python ML service is unavailable at http://127.0.0.1:8000/detect. Please ensure "python main.py" is running in the /ml folder.'
-      );
-    }
+    throw new Error(
+      `Python ML service is unavailable at ${ML_API_BASE}/detect. Please verify the service is running.`
+    );
   }
 
   if (!response.ok) {
@@ -97,4 +90,5 @@ export async function predictFrame(imageBlob) {
 export default {
   checkMLServiceHealth,
   predictFrame,
+  ML_API_BASE,
 };
