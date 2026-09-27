@@ -112,8 +112,8 @@
 .brutalist-header {
   background-color: #FFFFFF;
   border: 3px solid #000000;
-  border-radius: 24px;
-  padding: 8px clamp(12px, 1.4vw, 20px);
+  border-radius: 28px;
+  padding: 8px clamp(12px, 1.6vw, 24px);
   margin-bottom: 20px;
   box-shadow: 4px 4px 0px #000000;
   width: 100%;
@@ -125,8 +125,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(6px, 1vw, 14px);
+  gap: clamp(6px, 1vw, 12px);
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
@@ -134,7 +135,7 @@
 .header-brand {
   display: flex;
   align-items: center;
-  gap: clamp(6px, 0.8vw, 10px);
+  gap: clamp(6px, 0.7vw, 10px);
   cursor: pointer;
   user-select: none;
   flex-shrink: 0;
@@ -164,7 +165,7 @@
 
 .brand-name {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 1.6vw, 1.7rem);
+  font-size: clamp(1.3rem, 1.5vw, 1.65rem);
   line-height: 1;
   color: #000000;
   letter-spacing: 0.5px;
@@ -172,9 +173,9 @@
 
 .brand-sub {
   font-family: var(--font-body);
-  font-size: 0.58rem;
+  font-size: 0.56rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   color: #555550;
   text-transform: uppercase;
 }
@@ -183,11 +184,12 @@
 .desktop-nav-menu {
   display: none;
   align-items: center;
-  gap: clamp(4px, 0.6vw, 8px);
+  gap: clamp(3px, 0.45vw, 6px);
   flex-shrink: 1;
+  min-width: 0;
 }
 
-@media (min-width: 820px) {
+@media (min-width: 900px) {
   .desktop-nav-menu {
     display: flex;
   }
@@ -197,9 +199,9 @@
   background: transparent;
   border: 2px solid transparent;
   border-radius: var(--radius-pill);
-  padding: 6px clamp(8px, 0.9vw, 14px);
+  padding: 5px clamp(6px, 0.7vw, 10px);
   font-family: var(--font-accent);
-  font-size: clamp(0.78rem, 0.85vw, 0.88rem);
+  font-size: clamp(0.72rem, 0.78vw, 0.82rem);
   font-weight: 750;
   color: #000000;
   cursor: pointer;
@@ -208,16 +210,20 @@
   white-space: nowrap;
 }
 
-.desktop-history-short {
+.desktop-history-full {
   display: none;
 }
 
-@media (max-width: 1100px) and (min-width: 820px) {
+.desktop-history-short {
+  display: inline;
+}
+
+@media (min-width: 1350px) {
   .desktop-history-full {
-    display: none;
+    display: inline;
   }
   .desktop-history-short {
-    display: inline;
+    display: none;
   }
 }
 
@@ -237,14 +243,14 @@
 .btn-nav-emergency {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background-color: var(--tint-coral);
   color: #FFFFFF;
   border: 2px solid #000000;
   border-radius: var(--radius-pill);
-  padding: 6px clamp(10px, 1vw, 16px);
+  padding: 5px clamp(8px, 0.8vw, 12px);
   font-family: var(--font-accent);
-  font-size: clamp(0.78rem, 0.85vw, 0.88rem);
+  font-size: clamp(0.72rem, 0.78vw, 0.82rem);
   font-weight: 800;
   text-transform: uppercase;
   cursor: pointer;
@@ -273,7 +279,7 @@
 .header-right-actions {
   display: flex;
   align-items: center;
-  gap: clamp(6px, 0.8vw, 10px);
+  gap: clamp(5px, 0.6vw, 8px);
   flex-shrink: 0;
 }
 
@@ -281,15 +287,16 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 5px clamp(8px, 0.8vw, 12px);
+  padding: 5px clamp(6px, 0.6vw, 10px);
   border: 2px solid #000000;
   border-radius: var(--radius-pill);
   font-family: var(--font-body);
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 750;
   letter-spacing: 0.5px;
   background-color: #F5F5F0;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header-status-pill--online .status-indicator-dot {
@@ -311,13 +318,69 @@
   background: var(--color-yellow);
   border: 2px solid #000000;
   border-radius: var(--radius-pill);
-  padding: 5px clamp(10px, 1vw, 14px);
+  padding: 5px clamp(8px, 0.8vw, 12px);
   font-family: var(--font-accent);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   cursor: pointer;
   box-shadow: 2px 2px 0px #000000;
   white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.btn-header-login-quick:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #000000;
+}
+
+/* Intermediate responsive styles for compact desktop (900px - 1180px) */
+@media (min-width: 900px) and (max-width: 1180px) {
+  .brutalist-header {
+    padding: 7px clamp(8px, 1.2vw, 14px);
+  }
+  .header-inner {
+    gap: 6px;
+  }
+  .header-brand {
+    gap: 6px;
+  }
+  .brand-badge-pill {
+    width: 32px;
+    height: 32px;
+  }
+  .brand-eye-icon {
+    font-size: 1.05rem;
+  }
+  .brand-name {
+    font-size: 1.25rem;
+  }
+  .brand-sub {
+    display: none;
+  }
+  .desktop-nav-menu {
+    gap: 3px;
+  }
+  .desktop-nav-link {
+    padding: 4px 6px;
+    font-size: 0.69rem;
+  }
+  .btn-nav-emergency {
+    padding: 4px 8px;
+    font-size: 0.69rem;
+    gap: 4px;
+  }
+  .header-right-actions {
+    gap: 5px;
+  }
+  .header-status-pill {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+  }
+  .btn-header-login-quick {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+  }
 }
 
 /* Mobile Header Refinement (< 768px) */
