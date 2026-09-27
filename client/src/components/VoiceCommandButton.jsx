@@ -81,7 +81,7 @@ export default function VoiceCommandButton({
           )}
         </span>
         <span className="voice-btn-label">
-          {isListening ? 'Listening...' : 'Voice Command'}
+          {isListening ? 'REC' : 'VOICE'}
         </span>
       </button>
     </aside>
