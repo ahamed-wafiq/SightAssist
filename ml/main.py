@@ -49,12 +49,18 @@ print(f"[SightAssist ML] Model loaded successfully! Registered classes: {len(mod
 
 
 # ------------------------------------------------------------------------------
-# 2. GET /health
+# 2. GET / and GET /health
 # ------------------------------------------------------------------------------
+@app.get("/")
+def root():
+    """Root endpoint for status check."""
+    return {"status": "ok", "service": "SightAssist ML Service"}
+
 @app.get("/health")
 def health_check():
     """Health check endpoint returning ok status."""
     return {"status": "ok"}
+
 
 
 # ------------------------------------------------------------------------------
@@ -172,6 +178,9 @@ async def predict_alias(file: UploadFile = File(...)):
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
     import uvicorn
+    # Render assigns dynamic port via PORT environment variable
     port = int(os.environ.get("PORT", 8000))
-    print(f"[SightAssist ML] Starting Uvicorn server on http://127.0.0.1:{port}")
-    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
+    is_production = os.environ.get("RENDER") is not None or os.environ.get("ENVIRONMENT") == "production"
+    print(f"[SightAssist ML] Starting Uvicorn server on 0.0.0.0:{port} (production={is_production})")
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=not is_production)
+

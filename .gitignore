@@ -2,12 +2,14 @@
 # SightAssist - Root .gitignore
 # ==============================================================================
 
-# Model Binaries & Weights (Excluded from version control)
+# Model Binaries & Weights (Excluded from version control, except production best.pt)
 *.pt
 *.pth
 *.onnx
 *.engine
 *.bin
+!ml/model/best.pt
+
 
 # Environment & Secrets
 .env
