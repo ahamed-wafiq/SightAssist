@@ -6,18 +6,32 @@ import speechCommandListener from '../utils/speechRecognition';
  * Displays live speech recognition status, microphone toggle,
  * and command hints for hands-free operation.
  */
-export default function VoiceCommandsBar({ onCommandTriggered }) {
-  const [isSupported, setIsSupported] = useState(speechCommandListener.isSupported);
-  const [isListening, setIsListening] = useState(speechCommandListener.isActive);
+export default function VoiceCommandsBar({
+  onCommandTriggered,
+  isListening: externalIsListening,
+  onToggle: externalOnToggle,
+  lastTranscript: externalTranscript,
+  statusMessage,
+  isSupported: externalIsSupported,
+}) {
+  const [internalSupported, setInternalSupported] = useState(speechCommandListener.isSupported);
+  const [internalListening, setInternalListening] = useState(speechCommandListener.isActive);
   const [lastCommand, setLastCommand] = useState('');
-  const [lastTranscript, setLastTranscript] = useState('');
+  const [internalTranscript, setInternalTranscript] = useState('');
+
+  const isControlled = typeof externalOnToggle === 'function';
+  const isSupported = isControlled ? externalIsSupported ?? true : internalSupported;
+  const isListening = isControlled ? Boolean(externalIsListening) : internalListening;
+  const lastTranscript = isControlled ? (externalTranscript || statusMessage) : internalTranscript;
 
   useEffect(() => {
+    if (isControlled) return;
+
     speechCommandListener.onStateChangeCallback = (state) => {
-      setIsSupported(state.isSupported);
-      setIsListening(state.isListening);
+      setInternalSupported(state.isSupported);
+      setInternalListening(state.isListening);
       if (state.lastCommand) setLastCommand(state.lastCommand);
-      if (state.lastTranscript) setLastTranscript(state.lastTranscript);
+      if (state.lastTranscript) setInternalTranscript(state.lastTranscript);
     };
 
     speechCommandListener.onCommandCallback = (command, transcript) => {
@@ -25,13 +39,17 @@ export default function VoiceCommandsBar({ onCommandTriggered }) {
         onCommandTriggered(command, transcript);
       }
     };
-  }, [onCommandTriggered]);
+  }, [isControlled, onCommandTriggered]);
 
   const handleToggle = () => {
-    if (isListening) {
-      speechCommandListener.stop();
+    if (isControlled) {
+      externalOnToggle();
     } else {
-      speechCommandListener.start();
+      if (isListening) {
+        speechCommandListener.stop();
+      } else {
+        speechCommandListener.start();
+      }
     }
   };
 

@@ -6,6 +6,7 @@ import CameraView from './components/CameraView';
 import VoiceIndicator from './components/VoiceIndicator';
 import DetectionPanel from './components/DetectionPanel';
 import VoiceCommandsBar from './components/VoiceCommandsBar';
+import VoiceCommandButton from './components/VoiceCommandButton';
 import NavigationBar from './components/NavigationBar';
 import HistoryPage from './components/HistoryPage';
 import EmergencyPage from './components/EmergencyPage';
@@ -13,6 +14,7 @@ import SettingsPage from './components/SettingsPage';
 import RegisterPage from './components/RegisterPage';
 import LoginPage from './components/LoginPage';
 import AccountPage from './components/AccountPage';
+import useVoiceCommands from './hooks/useVoiceCommands';
 import speechService from './utils/speech';
 import voiceManager from './utils/voiceManager';
 import {
@@ -337,6 +339,73 @@ function App() {
     }
   };
 
+  // Navigation History Stack for "go back" / navigate(-1) voice command
+  const historyStackRef = useRef(['home']);
+
+  const navigate = useCallback((target) => {
+    if (target === -1 || target === '-1') {
+      if (historyStackRef.current.length > 1) {
+        historyStackRef.current.pop();
+        const prev = historyStackRef.current[historyStackRef.current.length - 1];
+        setActiveTab(prev);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return prev;
+      } else {
+        setActiveTab('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return 'home';
+      }
+    }
+
+    let tab = target;
+    if (typeof target === 'string') {
+      const clean = target.replace(/^\//, '').toLowerCase();
+      if (clean === '' || clean === 'home') tab = 'home';
+      else if (clean === 'assist') tab = 'assist';
+      else if (clean === 'history') tab = 'history';
+      else if (clean === 'settings') tab = 'settings';
+      else if (clean === 'emergency') tab = 'emergency';
+      else if (clean === 'login') tab = 'login';
+      else if (clean === 'register') tab = 'register';
+      else if (clean === 'account' || clean === 'profile') tab = 'account';
+    }
+
+    if (historyStackRef.current[historyStackRef.current.length - 1] !== tab) {
+      historyStackRef.current.push(tab);
+    }
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return tab;
+  }, []);
+
+  const enableVoice = useCallback(() => {
+    setIsMuted(false);
+    speechService.setMuted(false);
+  }, []);
+
+  const disableVoice = useCallback(() => {
+    setIsMuted(true);
+    speechService.setMuted(true);
+  }, []);
+
+  // Global Hands-free Voice Commands Hook for Navigation & System Control
+  const {
+    isListening: isVoiceCommandListening,
+    isSupported: isVoiceCommandSupported,
+    lastTranscript: voiceCommandTranscript,
+    statusMessage: voiceCommandStatus,
+    toggleListening: handleToggleVoiceCommand,
+  } = useVoiceCommands({
+    activeTab,
+    navigate,
+    startDetection: startAssistance,
+    stopDetection: stopAssistance,
+    enableVoice,
+    disableVoice,
+    isMuted,
+    isAssisting,
+  });
+
   const handleToggleMute = () => {
     const nextMuted = !isMuted;
     setIsMuted(nextMuted);
@@ -438,7 +507,7 @@ function App() {
         break;
 
       case 'EMERGENCY':
-        setActiveTab('emergency');
+        navigate('/emergency');
         speechService.speak(
           'Emergency SOS screen opened. Tap the large button to broadcast an alert.',
           true
@@ -448,7 +517,7 @@ function App() {
       default:
         break;
     }
-  }, [startAssistance, stopAssistance]);
+  }, [navigate, startAssistance, stopAssistance]);
 
   // Update Settings handler (persists to MongoDB)
   const handleUpdateSettings = async (newSettings) => {
@@ -461,13 +530,13 @@ function App() {
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
     // Redirect directly to SightAssist dashboard
-    setActiveTab('assist');
+    navigate('/assist');
   };
 
   const handleLogout = () => {
     logoutUser();
     setCurrentUser(null);
-    setActiveTab('login');
+    navigate('/login');
   };
 
   // Clean up timers on unmount
@@ -484,10 +553,7 @@ function App() {
       {/* 1. Desktop Top Header: Logo, Nav Links (Home, Assist, History, Settings, Profile, Emergency), Status Dot */}
       <Header
         activeTab={activeTab}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onSelectTab={(tab) => navigate(tab)}
         isOnline={mlStatus.online || backendConnected}
         currentUser={currentUser}
         onLogout={handleLogout}
@@ -497,10 +563,7 @@ function App() {
       {activeTab === 'home' && (
         <HomePage
           onStartAssist={startAssistance}
-          onOpenEmergency={() => {
-            setActiveTab('emergency');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
+          onOpenEmergency={() => navigate('/emergency')}
         />
       )}
 
@@ -545,7 +608,14 @@ function App() {
           />
 
           {/* Hands-Free Voice Commands Bar */}
-          <VoiceCommandsBar onCommandTriggered={handleVoiceCommand} />
+          <VoiceCommandsBar
+            onCommandTriggered={handleVoiceCommand}
+            isListening={isVoiceCommandListening}
+            onToggle={handleToggleVoiceCommand}
+            lastTranscript={voiceCommandTranscript}
+            statusMessage={voiceCommandStatus}
+            isSupported={isVoiceCommandSupported}
+          />
 
           {/* Primary Action Button: START DETECTION / STOP DETECTION */}
           <AssistanceControls
@@ -556,7 +626,7 @@ function App() {
       )}
 
       {activeTab === 'history' && (
-        <HistoryPage onBackToAssist={() => setActiveTab('assist')} />
+        <HistoryPage onBackToAssist={() => navigate('/assist')} />
       )}
 
       {activeTab === 'emergency' && (
@@ -567,22 +637,22 @@ function App() {
         <SettingsPage
           settings={settings}
           onUpdateSettings={handleUpdateSettings}
-          onBackToAssist={() => setActiveTab('assist')}
+          onBackToAssist={() => navigate('/assist')}
         />
       )}
 
       {activeTab === 'register' && (
         <RegisterPage
-          onBackToAssist={() => setActiveTab('assist')}
-          onGoToLogin={() => setActiveTab('login')}
+          onBackToAssist={() => navigate('/assist')}
+          onGoToLogin={() => navigate('/login')}
         />
       )}
 
       {activeTab === 'login' && (
         <LoginPage
           onLoginSuccess={handleLoginSuccess}
-          onGoToRegister={() => setActiveTab('register')}
-          onBackToAssist={() => setActiveTab('assist')}
+          onGoToRegister={() => navigate('/register')}
+          onBackToAssist={() => navigate('/assist')}
         />
       )}
 
@@ -590,17 +660,23 @@ function App() {
         <AccountPage
           currentUser={currentUser}
           onLogout={handleLogout}
-          onBackToAssist={() => setActiveTab('assist')}
+          onBackToAssist={() => navigate('/assist')}
         />
       )}
 
-      {/* 3. Mobile Fixed Bottom Navigation Bar (Home | Assist | History | Settings) */}
+      {/* 3. Global Hands-free Voice Navigation Button */}
+      <VoiceCommandButton
+        isListening={isVoiceCommandListening}
+        onToggle={handleToggleVoiceCommand}
+        statusMessage={voiceCommandStatus}
+        lastTranscript={voiceCommandTranscript}
+        isSupported={isVoiceCommandSupported}
+      />
+
+      {/* 4. Mobile Fixed Bottom Navigation Bar (Home | Assist | History | Settings) */}
       <NavigationBar
         activeTab={activeTab}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onSelectTab={(tab) => navigate(tab)}
       />
     </div>
   );

@@ -3374,3 +3374,136 @@
     box-shadow: 8px 8px 16px rgba(255, 90, 54, 0.6);
   }
 }
+
+/* --------------------------------------------------------------------------
+   GLOBAL VOICE COMMAND FLOATING BUTTON & STATUS DOCK
+   -------------------------------------------------------------------------- */
+.voice-command-floating-container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 990;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+@media (max-width: 899px) {
+  .voice-command-floating-container {
+    bottom: 74px;
+    right: 14px;
+  }
+}
+
+.btn-voice-command-float {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-yellow);
+  color: #000000;
+  border: 2.5px solid #000000;
+  border-radius: var(--radius-pill);
+  padding: 10px 18px;
+  font-family: var(--font-accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 4px 4px 0px #000000;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-voice-command-float:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #000000;
+}
+
+.btn-voice-command-float:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.btn-voice-command-float--listening {
+  background-color: #00F0FF;
+  color: #000000;
+  border-color: #000000;
+  box-shadow: 4px 4px 0px #000000, 0 0 16px rgba(0, 240, 255, 0.4);
+  animation: pulse-border 1.5s infinite;
+}
+
+.btn-voice-command-float--unsupported {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.voice-btn-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-mic-emoji {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.voice-mic-active-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #EF4444;
+  border-radius: 50%;
+  animation: pulse-dot 1s infinite;
+}
+
+.voice-command-status-bubble {
+  pointer-events: auto;
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 2px solid var(--color-yellow);
+  border-radius: 14px;
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 3px 3px 0px #000000;
+  max-width: 280px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeIn 0.2s ease;
+  box-sizing: border-box;
+}
+
+.voice-command-status-bubble--listening {
+  border-color: #00F0FF;
+}
+
+.status-live-pulse {
+  width: 8px;
+  height: 8px;
+  background-color: #00F0FF;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse-dot 1s infinite;
+}
+
+.status-bubble-text {
+  flex: 1;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
