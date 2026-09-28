@@ -237,10 +237,11 @@ function App() {
 
       if (
         message.includes('Python ML service is unavailable') ||
+        message.includes('ML API service is unavailable') ||
         message.includes('Failed to fetch') ||
         message.includes('NetworkError')
       ) {
-        setDetectionError('FastAPI ML service is unavailable. Please check the ML service status.');
+        setDetectionError('ML API service is unavailable. Please check the ML service status.');
       } else {
         setDetectionError(message);
       }
