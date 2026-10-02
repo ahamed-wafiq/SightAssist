@@ -1,3 +1,5 @@
+import { SquareIcon, PlayIcon } from './Icons';
+
 /**
  * AssistanceControls Component
  * Large brutalist action button matching reference aesthetic:
@@ -21,7 +23,11 @@ export default function AssistanceControls({
         aria-label={isAssisting ? 'Stop Detection' : 'Start Detection'}
       >
         <span className="btn-main-icon" aria-hidden="true">
-          {isAssisting ? '⏹' : '▶'}
+          {isAssisting ? (
+            <SquareIcon size={20} strokeWidth={2.4} />
+          ) : (
+            <PlayIcon size={20} strokeWidth={2.4} />
+          )}
         </span>
         <span className="btn-main-label">
           {isAssisting ? 'STOP DETECTION' : 'START DETECTION'}

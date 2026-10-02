@@ -1,4 +1,13 @@
 import { useRef, useEffect, useState, forwardRef, useImperativeHandle, useCallback } from 'react';
+import {
+  CameraIcon,
+  AlertTriangleIcon,
+  VolumeXIcon,
+  Volume2Icon,
+  RefreshCwIcon,
+  SquareIcon,
+  PlayIcon,
+} from './Icons';
 
 /**
  * CameraView Component
@@ -345,7 +354,9 @@ const CameraView = forwardRef(function CameraView(
         {/* Off State */}
         {!isCameraActive && !errorMsg && (
           <div className="camera-placeholder">
-            <div className="placeholder-icon" aria-hidden="true">📷</div>
+            <div className="placeholder-icon" aria-hidden="true">
+              <CameraIcon size={36} strokeWidth={2.2} />
+            </div>
             <p className="placeholder-text">Camera is currently paused.</p>
             <p className="placeholder-subtext">
               Press <strong>START ASSISTANCE</strong> below to begin real-time AI scanning.
@@ -364,7 +375,9 @@ const CameraView = forwardRef(function CameraView(
         {/* Error Message */}
         {errorMsg && (
           <div className="camera-error-banner" role="alert">
-            <span className="error-icon" aria-hidden="true">⚠️</span>
+            <span className="error-icon" aria-hidden="true">
+              <AlertTriangleIcon size={20} />
+            </span>
             <div className="error-text">
               <strong>Camera Alert:</strong> {errorMsg}
             </div>
@@ -410,7 +423,13 @@ const CameraView = forwardRef(function CameraView(
           onClick={onToggleCamera}
           aria-label={isCameraActive ? 'Stop camera' : 'Start camera'}
         >
-          <span className="btn-icon" aria-hidden="true">{isCameraActive ? '⏹' : '▶'}</span>
+          <span className="btn-icon" aria-hidden="true">
+            {isCameraActive ? (
+              <SquareIcon size={18} strokeWidth={2.4} />
+            ) : (
+              <PlayIcon size={18} strokeWidth={2.4} />
+            )}
+          </span>
           <span className="btn-label">{isCameraActive ? 'Stop Camera' : 'Start Camera'}</span>
         </button>
 
@@ -423,7 +442,13 @@ const CameraView = forwardRef(function CameraView(
             aria-label={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
             title={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
           >
-            <span className="btn-icon" aria-hidden="true">{isMuted ? '🔇' : '🔊'}</span>
+            <span className="btn-icon" aria-hidden="true">
+              {isMuted ? (
+                <VolumeXIcon size={18} strokeWidth={2.2} />
+              ) : (
+                <Volume2Icon size={18} strokeWidth={2.2} />
+              )}
+            </span>
             <span className="btn-label">{isMuted ? 'Unmute Voice' : 'Mute Voice'}</span>
           </button>
         )}
@@ -436,7 +461,9 @@ const CameraView = forwardRef(function CameraView(
             aria-label={`Switch camera. Currently using ${cameraFacing === 'environment' ? 'back camera' : 'front camera'}`}
             title="Switch front/back camera"
           >
-            <span className="btn-icon" aria-hidden="true">🔄</span>
+            <span className="btn-icon" aria-hidden="true">
+              <RefreshCwIcon size={18} strokeWidth={2.2} />
+            </span>
             <span className="btn-label">
               {cameraFacing === 'environment' ? 'Switch to Front' : 'Switch to Back'}
             </span>

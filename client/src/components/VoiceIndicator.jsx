@@ -1,3 +1,5 @@
+import { MicIcon, RefreshCwIcon, VolumeXIcon, Volume2Icon } from './Icons';
+
 /**
  * VoiceIndicator Component
  * Prominent Voice Assistant section in bold black/yellow editorial style:
@@ -32,7 +34,9 @@ export default function VoiceIndicator({
         {/* Top Header Row: Title & Status */}
         <div className="voice-card-top-row">
           <div className="voice-title-group">
-            <span className="voice-bubble-icon" aria-hidden="true">🎙️</span>
+            <span className="voice-bubble-icon" aria-hidden="true">
+              <MicIcon size={22} color="#000000" strokeWidth={2.4} />
+            </span>
             <div>
               <h2 className="voice-main-title">VOICE ASSISTANT</h2>
               <span className="voice-sub-kicker">REAL-TIME AUDIO GUIDANCE</span>
@@ -72,7 +76,7 @@ export default function VoiceIndicator({
             disabled={isMuted || (!lastSpokenText && !isAssisting)}
             aria-label="Repeat spoken message"
           >
-            <span aria-hidden="true">🔁</span>
+            <RefreshCwIcon size={16} strokeWidth={2.2} />
             <span>REPEAT GUIDANCE</span>
           </button>
 
@@ -83,7 +87,11 @@ export default function VoiceIndicator({
             onClick={onToggleMute}
             aria-label={isMuted ? 'Unmute voice alerts' : 'Mute voice alerts'}
           >
-            <span aria-hidden="true">{isMuted ? '🔇' : '🔊'}</span>
+            {isMuted ? (
+              <VolumeXIcon size={16} strokeWidth={2.2} />
+            ) : (
+              <Volume2Icon size={16} strokeWidth={2.2} />
+            )}
             <span>{isMuted ? 'UNMUTE VOICE' : 'MUTE VOICE'}</span>
           </button>
         </div>

@@ -1,3 +1,5 @@
+import { HomeIcon, EyeIcon, ClipboardListIcon, SettingsIcon } from './Icons';
+
 /**
  * NavigationBar Component
  * Fixed Mobile Bottom Navigation Bar:
@@ -7,10 +9,10 @@
  */
 export default function NavigationBar({ activeTab, onSelectTab }) {
   const tabs = [
-    { id: 'home', label: 'Home', icon: '🏠', title: 'SightAssist Home' },
-    { id: 'assist', label: 'Assist', icon: '👁️', title: 'Live Vision Assistant' },
-    { id: 'history', label: 'History', icon: '📋', title: 'Detection History' },
-    { id: 'settings', label: 'Settings', icon: '⚙️', title: 'Accessibility Settings' },
+    { id: 'home', label: 'Home', icon: <HomeIcon size={20} strokeWidth={2.2} />, title: 'SightAssist Home' },
+    { id: 'assist', label: 'Assist', icon: <EyeIcon size={20} strokeWidth={2.2} />, title: 'Live Vision Assistant' },
+    { id: 'history', label: 'History', icon: <ClipboardListIcon size={20} strokeWidth={2.2} />, title: 'Detection History' },
+    { id: 'settings', label: 'Settings', icon: <SettingsIcon size={20} strokeWidth={2.2} />, title: 'Accessibility Settings' },
   ];
 
   return (

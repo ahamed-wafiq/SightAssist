@@ -1,3 +1,5 @@
+import { AlertTriangleIcon, EyeIcon } from './Icons';
+
 /**
  * DetectionPanel Component
  * Editorial Brutalist Detection Cards:
@@ -24,7 +26,7 @@ export default function DetectionPanel({
       {/* Error alert if ML is unavailable */}
       {detectionError && (
         <div className="brutalist-alert brutalist-alert--warning" role="alert">
-          <span className="alert-emoji" aria-hidden="true">⚠️</span>
+          <AlertTriangleIcon size={18} />
           <div className="alert-text">
             <strong>System Notice:</strong> {detectionError}
           </div>
@@ -97,7 +99,9 @@ export default function DetectionPanel({
           </div>
         ) : (
           <div className="det-idle-state">
-            <div className="idle-indicator-circle">👁️</div>
+            <div className="idle-indicator-circle">
+              <EyeIcon size={26} color="#FFFFFF" strokeWidth={2.4} />
+            </div>
             <h3 className="idle-title">PATH CLEAR</h3>
             <p className="idle-sub">
               {isAssisting

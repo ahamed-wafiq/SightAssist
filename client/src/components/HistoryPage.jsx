@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getAllDetections, clearDetectionHistory } from '../services/api';
+import {
+  ClipboardListIcon,
+  WalkIcon,
+  BikeIcon,
+  CarIcon,
+  StairsIcon,
+  AlertTriangleIcon,
+} from './Icons';
 
 /**
  * Format timestamp into accessible time string: "10:42 AM"
@@ -186,7 +194,9 @@ export default function HistoryPage({ onBackToAssist }) {
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="editorial-empty-card">
-          <div className="empty-editorial-icon">📋</div>
+          <div className="empty-editorial-icon">
+            <ClipboardListIcon size={36} color="#000000" strokeWidth={2.2} />
+          </div>
           <h3 className="empty-editorial-title">NO DETECTIONS FOUND</h3>
           <p className="empty-editorial-sub">
             No entries match position "{filterPos}". Switch on detection on the Assist tab to record live data.
@@ -228,15 +238,17 @@ export default function HistoryPage({ onBackToAssist }) {
                   </div>
                   <div className="hist-visual-center">
                     <span className="hist-glyph">
-                      {objName.includes('PERSON')
-                        ? '🚶'
-                        : objName.includes('BIKE') || objName.includes('BICYCLE')
-                        ? '🚲'
-                        : objName.includes('CAR')
-                        ? '🚗'
-                        : objName.includes('STAIR')
-                        ? '🪜'
-                        : '⚠️'}
+                      {objName.includes('PERSON') ? (
+                        <WalkIcon size={28} strokeWidth={2.2} />
+                      ) : objName.includes('BIKE') || objName.includes('BICYCLE') ? (
+                        <BikeIcon size={28} strokeWidth={2.2} />
+                      ) : objName.includes('CAR') || objName.includes('BUS') || objName.includes('TRUCK') ? (
+                        <CarIcon size={28} strokeWidth={2.2} />
+                      ) : objName.includes('STAIR') ? (
+                        <StairsIcon size={28} strokeWidth={2.2} />
+                      ) : (
+                        <AlertTriangleIcon size={28} strokeWidth={2.2} />
+                      )}
                     </span>
                   </div>
                   <div className="hist-corner-dist">{dist}</div>

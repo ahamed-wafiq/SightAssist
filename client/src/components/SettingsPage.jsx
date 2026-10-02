@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import speechService from '../utils/speech';
+import { CheckCircleIcon } from './Icons';
 
 /**
  * SettingsPage Component
@@ -68,7 +69,8 @@ export default function SettingsPage({
 
       {saveStatus && (
         <div className="brutalist-alert brutalist-alert--notice" role="status">
-          ✓ {saveStatus}
+          <CheckCircleIcon size={18} />
+          <span>{saveStatus}</span>
         </div>
       )}
 

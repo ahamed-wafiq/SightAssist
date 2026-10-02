@@ -1,3 +1,5 @@
+import { EyeIcon } from './Icons';
+
 /**
  * Header Component
  * Bold Editorial / Modern Brutalist Desktop Top Navigation Bar:
@@ -25,7 +27,9 @@ export default function Header({
           aria-label="SightAssist Home"
         >
           <div className="brand-badge-pill" aria-hidden="true">
-            <span className="brand-eye-icon">👁️</span>
+            <span className="brand-eye-icon">
+              <EyeIcon size={20} color="#000000" strokeWidth={2.5} />
+            </span>
           </div>
           <div className="brand-text-block">
             <span className="brand-name">SIGHTASSIST</span>

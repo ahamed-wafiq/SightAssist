@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { registerUser } from '../services/api';
+import { CheckCircleIcon, AlertTriangleIcon } from './Icons';
 
 /**
  * RegisterPage Component
@@ -104,13 +105,15 @@ export default function RegisterPage({ onBackToAssist, onGoToLogin }) {
         {/* Alerts */}
         {successMessage && (
           <div className="brutalist-alert brutalist-alert--notice" role="alert">
-            ✓ {successMessage}
+            <CheckCircleIcon size={18} />
+            <span>{successMessage}</span>
           </div>
         )}
 
         {errorMessage && (
           <div className="brutalist-alert brutalist-alert--warning" role="alert">
-            ⚠️ {errorMessage}
+            <AlertTriangleIcon size={18} />
+            <span>{errorMessage}</span>
           </div>
         )}
 

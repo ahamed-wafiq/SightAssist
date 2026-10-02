@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { EyeIcon, MicIcon, SirenIcon } from './Icons';
 
 /**
  * HomePage Component
@@ -124,7 +125,9 @@ export default function HomePage({ onStartAssist, onOpenEmergency }) {
             <div className="orb-radar-wave wave-2" />
             <div className="orb-scan-line" />
             <div className="orb-camera-lens">
-              <span className="orb-lens-core">👁️</span>
+              <span className="orb-lens-core">
+                <EyeIcon size={30} color="#FFFFFF" strokeWidth={2.4} />
+              </span>
             </div>
           </div>
           <div className="orb-caption">
@@ -316,7 +319,9 @@ export default function HomePage({ onStartAssist, onOpenEmergency }) {
         <div className="connect-grid">
           {/* Card A: Voice Guidance Callout */}
           <div className="connect-card card--voice">
-            <div className="connect-icon-bubble">🎙️</div>
+            <div className="connect-icon-bubble">
+              <MicIcon size={22} color="#000000" strokeWidth={2.4} />
+            </div>
             <span className="connect-kicker">HANDS-FREE ASSISTANT</span>
             <h3 className="connect-title">NATURAL VOICE GUIDANCE</h3>
             <p className="connect-desc">
@@ -333,7 +338,9 @@ export default function HomePage({ onStartAssist, onOpenEmergency }) {
 
           {/* Card B: Emergency SOS Quick Access */}
           <div className="connect-card card--emergency">
-            <div className="connect-icon-bubble connect-icon-bubble--alert">🚨</div>
+            <div className="connect-icon-bubble connect-icon-bubble--alert">
+              <SirenIcon size={22} color="#FFFFFF" strokeWidth={2.4} />
+            </div>
             <span className="connect-kicker">SAFETY FIRST</span>
             <h3 className="connect-title">EMERGENCY SOS BROADCAST</h3>
             <p className="connect-desc">

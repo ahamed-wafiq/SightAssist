@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { loginUser } from '../services/api';
+import { CheckCircleIcon, AlertTriangleIcon } from './Icons';
 
 /**
  * LoginPage Component
@@ -85,13 +86,15 @@ export default function LoginPage({ onLoginSuccess, onGoToRegister, onBackToAssi
         {/* Alerts */}
         {successMessage && (
           <div className="brutalist-alert brutalist-alert--notice" role="alert">
-            ✓ {successMessage}
+            <CheckCircleIcon size={18} />
+            <span>{successMessage}</span>
           </div>
         )}
 
         {errorMessage && (
           <div className="brutalist-alert brutalist-alert--warning" role="alert">
-            ⚠️ {errorMessage}
+            <AlertTriangleIcon size={18} />
+            <span>{errorMessage}</span>
           </div>
         )}
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { XIcon, SunIcon, MoonIcon, InfoIcon } from './Icons';
 
 /**
  * SettingsModal Component
@@ -57,7 +58,7 @@ export default function SettingsModal({
             onClick={onClose}
             aria-label="Close settings"
           >
-            ✕
+            <XIcon size={18} strokeWidth={2.4} />
           </button>
         </div>
 
@@ -73,7 +74,8 @@ export default function SettingsModal({
                   if (isHighContrast) onToggleTheme();
                 }}
               >
-                ☀️ Clean Light
+                <SunIcon size={16} strokeWidth={2.2} />
+                <span>Clean Light</span>
               </button>
               <button
                 type="button"
@@ -82,7 +84,8 @@ export default function SettingsModal({
                   if (!isHighContrast) onToggleTheme();
                 }}
               >
-                🌙 High Contrast
+                <MoonIcon size={16} strokeWidth={2.2} />
+                <span>High Contrast</span>
               </button>
             </div>
           </div>
@@ -127,7 +130,8 @@ export default function SettingsModal({
           {/* Safety Notice */}
           <div className="modal-safety-notice">
             <p>
-              ℹ️ <strong>SightAssist Assistive Prototype:</strong> Monocular distance estimation is approximate based on 2D camera geometry and is not guaranteed for collision safety.
+              <InfoIcon size={18} strokeWidth={2.2} />
+              <span><strong>SightAssist Assistive Prototype:</strong> Monocular distance estimation is approximate based on 2D camera geometry and is not guaranteed for collision safety.</span>
             </p>
           </div>
         </div>

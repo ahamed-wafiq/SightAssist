@@ -13,6 +13,7 @@
  */
 
 import React from 'react';
+import { MicIcon } from './Icons';
 
 export default function VoiceCommandButton({
   isListening,
@@ -77,7 +78,7 @@ export default function VoiceCommandButton({
           {isListening ? (
             <span className="voice-mic-active-dot" />
           ) : (
-            <span className="voice-mic-emoji">🎙️</span>
+            <MicIcon size={20} strokeWidth={2.4} />
           )}
         </span>
         <span className="voice-btn-label">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getCurrentUser } from '../services/api';
+import { UserIcon, AlertTriangleIcon } from './Icons';
 
 /**
  * AccountPage Component
@@ -52,7 +53,8 @@ export default function AccountPage({ currentUser, onLogout, onBackToAssist }) {
 
         {error && (
           <div className="brutalist-alert brutalist-alert--warning" role="alert">
-            ⚠️ {error}
+            <AlertTriangleIcon size={18} />
+            <span>{error}</span>
           </div>
         )}
 
@@ -63,7 +65,9 @@ export default function AccountPage({ currentUser, onLogout, onBackToAssist }) {
         ) : profile ? (
           <div className="profile-details-editorial">
             <div className="profile-avatar-row">
-              <div className="profile-glyph-box">👤</div>
+              <div className="profile-glyph-box">
+                <UserIcon size={32} strokeWidth={2.2} />
+              </div>
               <div>
                 <h2 className="profile-name-title">{profile.name}</h2>
                 <span className="profile-email-badge">{profile.email}</span>

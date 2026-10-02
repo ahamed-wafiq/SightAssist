@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import speechCommandListener from '../utils/speechRecognition';
+import { MicIcon } from './Icons';
 
 /**
  * VoiceCommandsBar Component
@@ -56,7 +57,9 @@ export default function VoiceCommandsBar({
   if (!isSupported) {
     return (
       <div className="voice-commands-strip voice-commands-strip--unsupported">
-        <span className="vc-icon">🎙️</span>
+        <span className="vc-icon">
+          <MicIcon size={18} />
+        </span>
         <span className="vc-text">
           Voice commands available in Chrome & Edge browsers.
         </span>
@@ -75,7 +78,7 @@ export default function VoiceCommandsBar({
           title={isListening ? 'Listening for voice commands' : 'Turn on voice commands'}
         >
           <span className="vc-mic-icon" aria-hidden="true">
-            {isListening ? '🎙️' : '🎤'}
+            <MicIcon size={18} strokeWidth={2.2} />
           </span>
           <span className="vc-mic-label">
             {isListening ? 'Voice Commands Active' : 'Enable Voice Commands'}

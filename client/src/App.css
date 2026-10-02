@@ -55,6 +55,45 @@
   box-sizing: border-box;
 }
 
+/* --------------------------------------------------------------------------
+   Global SVG Icons & Container Alignments
+   -------------------------------------------------------------------------- */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.brand-badge-pill .icon,
+.profile-glyph-box .icon,
+.idle-indicator-circle .icon,
+.connect-icon-bubble .icon,
+.empty-editorial-icon .icon,
+.contact-avatar-icon .icon,
+.hist-glyph .icon,
+.mob-nav-icon .icon,
+.vc-icon .icon,
+.vc-mic-icon .icon,
+.btn-icon .icon,
+.btn-main-icon .icon,
+.sos-alert-icon .icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brutalist-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brutalist-alert .icon {
+  flex-shrink: 0;
+}
+
 .btn-brutalist:hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0px #000000;
@@ -869,7 +908,9 @@
 }
 
 .orb-lens-core {
-  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .orb-caption {

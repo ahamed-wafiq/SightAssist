@@ -6,6 +6,7 @@ import {
   triggerEmergencySOS,
 } from '../services/api';
 import speechService from '../utils/speech';
+import { SirenIcon, UserIcon } from './Icons';
 
 /**
  * EmergencyPage Component
@@ -123,7 +124,9 @@ export default function EmergencyPage() {
               onClick={handleTriggerSOS}
               aria-label="Get Help Now"
             >
-              <span className="sos-alert-icon" aria-hidden="true">🚨</span>
+              <span className="sos-alert-icon" aria-hidden="true">
+                <SirenIcon size={24} strokeWidth={2.4} />
+              </span>
               <span className="sos-main-text">GET HELP NOW</span>
               <span className="sos-arrow" aria-hidden="true">→</span>
             </button>
@@ -136,7 +139,10 @@ export default function EmergencyPage() {
         <section className="brutalist-alert brutalist-alert--danger" role="alert" aria-live="assertive">
           <div className="alert-content-row">
             <div>
-              <strong>🚨 EMERGENCY BROADCAST ACTIVE:</strong>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <SirenIcon size={20} strokeWidth={2.4} />
+                <strong>EMERGENCY BROADCAST ACTIVE:</strong>
+              </div>
               <p>{sosStatus.message || 'Alert broadcast sent to contacts.'}</p>
             </div>
             <button
@@ -231,7 +237,9 @@ export default function EmergencyPage() {
             contacts.map((c) => (
               <div key={c._id || c.name} className="editorial-contact-card">
                 <div className="contact-card-top">
-                  <span className="contact-avatar-icon">👤</span>
+                  <span className="contact-avatar-icon">
+                    <UserIcon size={24} strokeWidth={2.2} />
+                  </span>
                   <span className="contact-relation-pill">{c.relationship || 'Contact'}</span>
                 </div>
                 <div className="contact-card-body">
